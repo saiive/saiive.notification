@@ -10,10 +10,6 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '09ede222-72d3-46b3-9b0a-7d1805a7b465'
-  imageRepository: 'saiive.alert'
-  containerRegistry: 'defiwallet.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   
@@ -21,6 +17,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
+
 - stage: Build
   displayName: Build and push stage
   jobs:  
@@ -30,12 +27,12 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Scalway docker build
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: 'Scaleway'
+        repository: 'saiive/saiive.alert'
+        command: 'buildAndPush'
+        Dockerfile: $(dockerfilePath)
         tags: |
           $(tag)
           latest
