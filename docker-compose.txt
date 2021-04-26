@@ -1,0 +1,15 @@
+version: '3.0'
+
+services:
+  saiive.alert:
+    image: "rg.fr-par.scw.cloud/saiive/saiive.alert:latest"
+    ports:
+      - "80:80"
+      - "443:443"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    restart: always
+    

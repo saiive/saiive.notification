@@ -82,10 +82,11 @@ namespace Saiive.Alert.Check
                     _logger.LogInformation($"Check for {pubSplit[1]} with pubKey {pubSplit[0]}");
                     foreach (var tx in txs.Where(a => a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue && a.MintHeight > _lastBlockHeight))
                     {
+                        var explorerUrl = $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintHeight.Value})";
                         await _publisher.Notify(new NotifyMessage
                         {
                             PubKey = pubSplit[0],
-                            Message = $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n🍻🍻"
+                            Message = $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
                         });
                     }
                 });
