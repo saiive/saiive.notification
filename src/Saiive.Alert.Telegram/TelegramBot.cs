@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Alert.Check.Abstractions;
 using Saiive.Alert.Telegram.Options;
@@ -13,29 +14,46 @@ namespace Saiive.Alert.Telegram
     {
         private readonly IAlertNotifier _notifier;
         private readonly IOptions<TelegramConfig> _config;
+        private readonly ILogger<TelegramBot> _logger;
         private readonly ITelegramBotClient _telegram;
         private Guid _handleId;
 
-        public TelegramBot(IAlertNotifier notifier, IOptions<TelegramConfig> config)
+        public TelegramBot(IAlertNotifier notifier, IOptions<TelegramConfig> config, ILogger<TelegramBot> logger)
         {
             _notifier = notifier;
             _config = config;
+            _logger = logger;
             _telegram = new TelegramBotClient(config.Value.BotId);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await _telegram.SendTextMessageAsync(
+            try
+            {
+
+                await _telegram.SendTextMessageAsync(
                    chatId: _config.Value.ChannelId,
                    text: $"Hello. Your friendly masternode alert-service has started 🎉"
                );
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error sending telegram message...", e);
+            }
 
             _handleId = await _notifier.Register(async message =>
             {
-                await _telegram.SendTextMessageAsync(
+                try {
+                
+                    await _telegram.SendTextMessageAsync(
                     chatId: _config.Value.ChannelId,
                     text: $"{message.PubKey}:\n{message.Message}"
                 );
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error sending telegram message...", e);
+                }
             });
         }
 

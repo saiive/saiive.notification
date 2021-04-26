@@ -66,37 +66,56 @@ namespace Saiive.Alert.Check
 
         private async Task Poll()
         {
-            var tasks = new List<Task>(); 
-            var blockTip = _blockApi.ApiV1NetworkCoinBlockTipGet(_config.Value.Coin.ToUpperInvariant(),
-                _config.Value.Network.ToLowerInvariant());
-
-            _logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
-            foreach (var pub in _config.Value.PubKeys)
+            try
             {
-                var pubSplit = pub.Split(":", StringSplitOptions.RemoveEmptyEntries);
-                var task = new Task(async () =>
+                var tasks = new List<Task>();
+                var blockTip = _blockApi.ApiV1NetworkCoinBlockTipGet(_config.Value.Coin.ToUpperInvariant(),
+                    _config.Value.Network.ToLowerInvariant());
+
+                _logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
+                foreach (var pub in _config.Value.PubKeys)
                 {
-                    var txs = _addressApi.ApiV1NetworkCoinTxsAddressGet(
-                        _config.Value.Coin.ToUpperInvariant(), _config.Value.Network.ToLowerInvariant(), pubSplit[0]);
-
-                    _logger.LogInformation($"Check for {pubSplit[1]} with pubKey {pubSplit[0]}");
-                    foreach (var tx in txs.Where(a => a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue && a.MintHeight > _lastBlockHeight))
+                    var pubSplit = pub.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                    var task = new Task(async () =>
                     {
-                        var explorerUrl = $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintHeight.Value})";
-                        await _publisher.Notify(new NotifyMessage
+                        try
                         {
-                            PubKey = pubSplit[0],
-                            Message = $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
-                        });
-                    }
-                });
+                            var txs = _addressApi.ApiV1NetworkCoinTxsAddressGet(
+                                _config.Value.Coin.ToUpperInvariant(), _config.Value.Network.ToLowerInvariant(),
+                                pubSplit[0]);
 
-                tasks.Add(task);
-                task.Start();
+                            _logger.LogInformation($"Check for {pubSplit[1]} with pubKey {pubSplit[0]}");
+                            foreach (var tx in txs.Where(a =>
+                                a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue &&
+                                a.MintHeight > _lastBlockHeight))
+                            {
+                                var explorerUrl =
+                                    $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintHeight.Value})";
+                                await _publisher.Notify(new NotifyMessage
+                                {
+                                    PubKey = pubSplit[0],
+                                    Message =
+                                        $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
+                                });
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError("Error fetching address data...", e);
+                        }
+                    });
+
+                    tasks.Add(task);
+                    task.Start();
+                }
+
+                await Task.WhenAll(tasks);
+                _lastBlockHeight = blockTip.Height.Value;
             }
-
-            await Task.WhenAll(tasks);
-            _lastBlockHeight = blockTip.Height.Value;
+            catch(Exception e)
+            {
+                _logger.LogError("Unknown error,...", e);
+            }
         }
     }
 }
