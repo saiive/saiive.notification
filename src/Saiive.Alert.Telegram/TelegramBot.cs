@@ -25,6 +25,11 @@ namespace Saiive.Alert.Telegram
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            await _telegram.SendTextMessageAsync(
+                   chatId: _config.Value.ChannelId,
+                   text: $"Hello. Your friendly masternode alert-service has started 🎉"
+               );
+
             _handleId = await _notifier.Register(async message =>
             {
                 await _telegram.SendTextMessageAsync(
@@ -32,12 +37,14 @@ namespace Saiive.Alert.Telegram
                     text: $"{message.PubKey}:\n{message.Message}"
                 );
             });
-
-            
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
+            await _telegram.SendTextMessageAsync(
+                chatId: _config.Value.ChannelId,
+                text: $"GoodBye. Your friendly masternode stopped! 😭😭😭"
+            );
             await _notifier.UnRegister(_handleId);
         }
     }

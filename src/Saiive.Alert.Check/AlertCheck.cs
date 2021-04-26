@@ -85,7 +85,7 @@ namespace Saiive.Alert.Check
                         await _publisher.Notify(new NotifyMessage
                         {
                             PubKey = pubSplit[0],
-                            Message = $"\xF0\x9F\x8E\x89\xF0\x9F\x8E\x89 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n\xF0\x9F\x8D\xBB\xF0\x9F\x8D\xBB"
+                            Message = $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n🍻🍻"
                         });
                     }
                 });
