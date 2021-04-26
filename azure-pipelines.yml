@@ -21,6 +21,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
+
 - stage: Build
   displayName: Build and push stage
   jobs:  
@@ -30,12 +31,12 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Scalway docker build
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: 'Scaleway'
+        repository: 'saiive.alert'
+        command: 'buildAndPush'
+        Dockerfile: $(dockerfilePath)
         tags: |
           $(tag)
           latest
