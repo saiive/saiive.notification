@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Saiive.Alert.Check.Abstractions;
 using Saiive.Alert.Telegram.Options;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace Saiive.Alert.Telegram
 {
@@ -28,26 +30,32 @@ namespace Saiive.Alert.Telegram
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            try
+            if (!Debugger.IsAttached)
             {
+                try
+                {
 
-                await _telegram.SendTextMessageAsync(
-                   chatId: _config.Value.ChannelId,
-                   text: $"Hello. Your friendly masternode alert-service has started 🎉"
-               );
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Error sending telegram message...", e);
+                    await _telegram.SendTextMessageAsync(
+                        _config.Value.ChannelId,
+                        $"Hello. Your friendly masternode alert-service has started 🎉"
+                    );
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error sending telegram message...", e);
+                }
             }
 
             _handleId = await _notifier.Register(async message =>
             {
-                try {
-                
+                try
+                {
+
+                    var msg = $"*{message.PubKey}*\n{message.Message}".Replace("_", "\\_");
                     await _telegram.SendTextMessageAsync(
-                    chatId: _config.Value.ChannelId,
-                    text: $"{message.PubKey}:\n{message.Message}"
+                    _config.Value.ChannelId,
+                    msg, 
+                    ParseMode.Markdown
                 );
                 }
                 catch (Exception e)
@@ -60,8 +68,8 @@ namespace Saiive.Alert.Telegram
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             await _telegram.SendTextMessageAsync(
-                chatId: _config.Value.ChannelId,
-                text: $"GoodBye. Your friendly masternode stopped! 😭😭😭"
+                _config.Value.ChannelId,
+                $"GoodBye. Your friendly masternode stopped! 😭😭😭"
             );
             await _notifier.UnRegister(_handleId);
         }

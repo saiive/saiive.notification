@@ -49,7 +49,7 @@ namespace Saiive.Alert.Check
 
             if (Debugger.IsAttached)
             {
-                _lastBlockHeight = 0;
+                _lastBlockHeight = 807936;
             }
 
             _logger.LogInformation($"Starting at blockheight {_lastBlockHeight}");
@@ -90,12 +90,12 @@ namespace Saiive.Alert.Check
                                 a.MintHeight > _lastBlockHeight))
                             {
                                 var explorerUrl =
-                                    $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintHeight.Value})";
+                                    $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintTxId})";
                                 await _publisher.Notify(new NotifyMessage
                                 {
                                     PubKey = pubSplit[0],
                                     Message =
-                                        $"🎉🎉 {pubSplit[1]}: Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
+                                        $"🎉🎉 {pubSplit[1]} Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
                                 });
                             }
                         }
