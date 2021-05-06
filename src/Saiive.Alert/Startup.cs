@@ -21,8 +21,8 @@ namespace Saiive.Alert
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddAlertChecker(Configuration);
-            services.AddTelegramBot(Configuration);
+            services.AddAlertChecker();
+            services.AddTelegramBot();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

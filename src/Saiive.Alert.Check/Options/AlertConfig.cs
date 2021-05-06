@@ -13,6 +13,6 @@ namespace Saiive.Alert.Check.Options
         public string ExplorerBaseUrl { get; set; } = "https://explorer.defichain.com/";
         public string ExplorerTxPrefix { get; set; } = "#/DFI/mainnet/tx/";
 
-        public List<string> PubKeys { get; set; } = new() {  "8e6cx8JGZ5cjEkYiWHrFV6C7VKJHuxxw3x:Masternode_1", "8SjheaoNsGUieobTgkCD3vWjRDrw5qMQFN:Masternode_2", "8XVuitUvR9KVjmieuwKjXSLZaoCX4zeNJo:Masternode_3" };
+        public List<(string pubKey, string name)> PubKeys { get; set; } = new() {  ("8e6cx8JGZ5cjEkYiWHrFV6C7VKJHuxxw3x", "Masternode_1"), ("8SjheaoNsGUieobTgkCD3vWjRDrw5qMQFN", "Masternode_2"), ("8XVuitUvR9KVjmieuwKjXSLZaoCX4zeNJo", "Masternode_3") };
     }
 }

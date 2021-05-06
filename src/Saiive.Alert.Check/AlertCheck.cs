@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Alert.Abstractions;
@@ -14,7 +11,7 @@ using Saiive.SuperNode.Client.Client;
 
 namespace Saiive.Alert.Check
 {
-    internal class AlertCheck : IHostedService
+    internal class AlertCheck : IAlertCheck
     {
         private readonly IOptions<AlertConfig> _config;
         private readonly IAlertPublisher _publisher;
@@ -26,8 +23,6 @@ namespace Saiive.Alert.Check
         private readonly BlockApi _blockApi;
 
         private int _lastBlockHeight = -1;
-
-        private Timer _pollingTimer;
 
         public AlertCheck(IOptions<AlertConfig> config, IAlertPublisher publisher, ILogger<AlertCheck> logger)
         {
@@ -41,30 +36,8 @@ namespace Saiive.Alert.Check
             _blockApi = new BlockApi(_client);
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            var blockTip = _blockApi.ApiV1NetworkCoinBlockTipGet(_config.Value.Coin.ToUpperInvariant(),
-                _config.Value.Network.ToLowerInvariant());
-            _lastBlockHeight = blockTip.Height.Value;
-
-            if (Debugger.IsAttached)
-            {
-                _lastBlockHeight = 807936;
-            }
-
-            _logger.LogInformation($"Starting at blockheight {_lastBlockHeight}");
-
-            _pollingTimer = new Timer(async (s) => await Poll(), null, TimeSpan.FromMilliseconds(1), _config.Value.Interval);
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _pollingTimer.Dispose();
-            return Task.CompletedTask;
-        }
-
-        private async Task Poll()
+       
+        public async Task CheckAlerts()
         {
             try
             {
@@ -75,16 +48,15 @@ namespace Saiive.Alert.Check
                 _logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
                 foreach (var pub in _config.Value.PubKeys)
                 {
-                    var pubSplit = pub.Split(":", StringSplitOptions.RemoveEmptyEntries);
                     var task = new Task(async () =>
                     {
                         try
                         {
                             var txs = _addressApi.ApiV1NetworkCoinTxsAddressGet(
                                 _config.Value.Coin.ToUpperInvariant(), _config.Value.Network.ToLowerInvariant(),
-                                pubSplit[0]);
+                                pub.pubKey);
 
-                            _logger.LogInformation($"Check for {pubSplit[1]} with pubKey {pubSplit[0]}");
+                            _logger.LogInformation($"Check for {pub.name} with pubKey {pub.pubKey}");
                             foreach (var tx in txs.Where(a =>
                                 a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue &&
                                 a.MintHeight > _lastBlockHeight))
@@ -93,9 +65,9 @@ namespace Saiive.Alert.Check
                                     $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintTxId})";
                                 await _publisher.Notify(new NotifyMessage
                                 {
-                                    PubKey = pubSplit[0],
+                                    PubKey = pub.pubKey,
                                     Message =
-                                        $"🎉🎉 {pubSplit[1]} Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
+                                        $"🎉🎉 {pub.name} Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
                                 });
                             }
                         }

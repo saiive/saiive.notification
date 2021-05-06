@@ -5,15 +5,17 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert", "Saiive.Alert\Saiive.Alert.csproj", "{F1C35A40-4EFA-4C0F-949F-39167D9979AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Telegram", "Saiive.Alert.Telegram\Saiive.Alert.Telegram.csproj", "{85D8AFE2-4921-4197-BD90-A0125612C72A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Telegram", "Saiive.Alert.Telegram\Saiive.Alert.Telegram.csproj", "{85D8AFE2-4921-4197-BD90-A0125612C72A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Check", "Saiive.Alert.Check\Saiive.Alert.Check.csproj", "{1D2F3EB1-F21F-4B88-927A-41A15AA79782}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Check", "Saiive.Alert.Check\Saiive.Alert.Check.csproj", "{1D2F3EB1-F21F-4B88-927A-41A15AA79782}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Check.Abstractions", "Saiive.Alert.Check.Abstractions\Saiive.Alert.Check.Abstractions.csproj", "{ADF67EA1-D4CB-46DA-A6F7-D7449930D969}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Check.Abstractions", "Saiive.Alert.Check.Abstractions\Saiive.Alert.Check.Abstractions.csproj", "{ADF67EA1-D4CB-46DA-A6F7-D7449930D969}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Abstractions", "Saiive.Alert.Abstractions\Saiive.Alert.Abstractions.csproj", "{250F605E-E11C-42E0-89BE-22BA8C113C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Abstractions", "Saiive.Alert.Abstractions\Saiive.Alert.Abstractions.csproj", "{250F605E-E11C-42E0-89BE-22BA8C113C9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.SuperNode.Client", "Saiive.SuperNode.Client\Saiive.SuperNode.Client.csproj", "{90AAF4B4-312F-48AD-AE12-A10A2E50777F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.SuperNode.Client", "Saiive.SuperNode.Client\Saiive.SuperNode.Client.csproj", "{90AAF4B4-312F-48AD-AE12-A10A2E50777F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Functions", "Saiive.Alert.Functions\Saiive.Alert.Functions.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{90AAF4B4-312F-48AD-AE12-A10A2E50777F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90AAF4B4-312F-48AD-AE12-A10A2E50777F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90AAF4B4-312F-48AD-AE12-A10A2E50777F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

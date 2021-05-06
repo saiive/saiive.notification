@@ -6,10 +6,11 @@ namespace Saiive.Alert.Telegram
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddTelegramBot(this IServiceCollection services)
         {
             services.AddHostedService<TelegramBot>();
 
+            var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
             services.Configure<TelegramConfig>(
                 configuration.GetSection(nameof(TelegramConfig)));

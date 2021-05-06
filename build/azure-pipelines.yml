@@ -1,0 +1,105 @@
+variables:
+    Parameters.RestoreBuildProjects: '**/Saiive.Alert.sln'
+    BuildConfiguration: 'Release'
+    Parameters.AzureFunction: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
+    vmImageName: 'ubuntu-latest'
+
+trigger:
+- master
+- features/*
+- releases/*
+- fix/*
+
+stages:
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: '$(Parameters.RestoreBuildProjects)'
+        vstsFeed: 'db32b6a4-1f6f-4165-8e05-002a0b39ef6a'
+        includeNuGetOrg: true
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        projects: '$(Parameters.RestoreBuildProjects)'
+        arguments: '--configuration $(BuildConfiguration)'
+
+
+- stage: PackAzureFunction
+  displayName: Pack and archive azure functions
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - job: Publish
+    displayName: 00 Publish azure function
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: '$(Parameters.RestoreBuildProjects)'
+        vstsFeed: 'db32b6a4-1f6f-4165-8e05-002a0b39ef6a'
+        includeNuGetOrg: true
+        
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+          command: publish
+          projects: '$(Parameters.AzureFunction)'
+          arguments: '-o $(Build.ArtifactStagingDirectory)/function'
+          zipAfterPublish: true
+          modifyOutputPath: false
+          publishWebProjects: false
+          
+    - task: Bash@3
+      displayName: Rename file
+      inputs:
+          targetType: 'inline'
+          workingDirectory: $(Build.ArtifactStagingDirectory)/function
+          script: 'mv function.zip $(Build.BuildNumber)-function.zip'
+    - task: PublishBuildArtifacts@1
+      inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'AzureFunctions'
+          publishLocation: 'Container'
+
+
+- stage: PackageTerraform
+  displayName: Pack terraform
+  dependsOn: Build
+
+  jobs:
+  - job: Pack
+    displayName: Pack terraform
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: CopyFiles@2
+      inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/terraform'
+          Contents: '**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+          CleanTargetFolder: true
+          OverWrite: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'terraform'
+          publishLocation: 'Container'
