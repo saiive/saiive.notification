@@ -1,7 +1,8 @@
 variables:
     Parameters.RestoreBuildProjects: '**/Saiive.Alert.sln'
     BuildConfiguration: 'Release'
-    Parameters.AzureFunction: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
+    Parameters.AzureFunctionAlert: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
+    Parameters.AzureFunctionMessenger: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
     vmImageName: 'ubuntu-latest'
 
 trigger:
@@ -60,8 +61,18 @@ stages:
       displayName: Publish
       inputs:
           command: publish
-          projects: '$(Parameters.AzureFunction)'
+          projects: '$(Parameters.AzureFunctionAlert)'
           arguments: '-o $(Build.ArtifactStagingDirectory)/function'
+          zipAfterPublish: true
+          modifyOutputPath: false
+          publishWebProjects: false
+        
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+          command: publish
+          projects: '$(Parameters.AzureFunctionMessenger)'
+          arguments: '-o $(Build.ArtifactStagingDirectory)/function-messenger'
           zipAfterPublish: true
           modifyOutputPath: false
           publishWebProjects: false
@@ -72,6 +83,13 @@ stages:
           targetType: 'inline'
           workingDirectory: $(Build.ArtifactStagingDirectory)/function
           script: 'mv function.zip $(Build.BuildNumber)-function.zip'
+    - task: Bash@3
+      displayName: Rename file
+      inputs:
+          targetType: 'inline'
+          workingDirectory: $(Build.ArtifactStagingDirectory)/function-messenger
+          script: 'mv function-messenger.zip $(Build.BuildNumber)-function-messenger.zip'
+    
     - task: PublishBuildArtifacts@1
       inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'

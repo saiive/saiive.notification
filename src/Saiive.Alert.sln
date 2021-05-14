@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Abstractions",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.SuperNode.Client", "Saiive.SuperNode.Client\Saiive.SuperNode.Client.csproj", "{90AAF4B4-312F-48AD-AE12-A10A2E50777F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Functions", "Saiive.Alert.Functions\Saiive.Alert.Functions.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Functions", "Saiive.Alert.Functions\Saiive.Alert.Functions.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Messenger", "Saiive.Alert.Messenger\Saiive.Alert.Messenger.csproj", "{E5320765-221D-47F9-A31B-F0A46BC359C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33731629-A0CC-4EC5-A4E2-85CC588D7599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5320765-221D-47F9-A31B-F0A46BC359C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5320765-221D-47F9-A31B-F0A46BC359C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5320765-221D-47F9-A31B-F0A46BC359C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5320765-221D-47F9-A31B-F0A46BC359C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

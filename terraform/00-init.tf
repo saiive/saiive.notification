@@ -9,18 +9,8 @@ terraform {
 
 terraform {
   required_providers {
-    uptimerobot = {
-      source  = "louy/uptimerobot"
-      version = "0.5.1"
-    }
-
     azurerm = {
       source = "hashicorp/azurerm"
-    }
-
-    scaleway = {
-      source = "scaleway/scaleway"
-      version = "1.17.2"
     }
 
     local = {
@@ -40,6 +30,9 @@ terraform {
 provider "http" {
   
 }
+provider "azurerm" {
+  features {}
+}
 
 
 # define the deployment location (az account list-locations --output table)
@@ -53,15 +46,12 @@ variable "prefix" {
 	description = "deployment prefix"
 }
 
+variable "environment" {
+}
+
 variable "environment_tag" {
 }
 
 variable "app_version" {
-	
-}
-
-# define the path of the zipped function app
-variable "functionapp" {
-    type = string
-    default = "./functionapp.zip"
+	default = ""
 }

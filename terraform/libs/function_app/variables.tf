@@ -31,3 +31,13 @@ variable "size" {
 }
 
 
+variable "variables" {
+	type = map
+	default = {}
+}
+
+variable "connection_strings" {
+	type = list(any)
+
+	default = []
+}

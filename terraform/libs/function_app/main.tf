@@ -94,7 +94,17 @@ resource "azurerm_function_app" "functions" {
     storage_connection_string = azurerm_storage_account.storage.primary_connection_string
     version = "~3"
 
-    app_settings = {
+    dynamic "connection_string" {
+        for_each = var.connection_strings    
+        content {
+            name = connection_string.name
+            type = connection_string.type
+            value = connection_string.value
+        }
+        
+    }
+
+    app_settings = merge({
         https_only = true
         FUNCTIONS_WORKER_RUNTIME = "dotnet"
         OpenApi__Info__License__Name = "~10"
@@ -102,10 +112,12 @@ resource "azurerm_function_app" "functions" {
         OpenApi__Info__Version = "3.0.0"
         FUNCTION_APP_EDIT_MODE = "readonly"
         WEBSITE_ENABLE_SYNC_UPDATE_SITE = "false"
-        HASH = "${base64encode(filesha256("${var.app_version}-${var.function_app_file}"))}"
+        HASH = base64encode(filesha256("${var.app_version}-${var.function_app_file}"))
         WEBSITE_RUN_FROM_PACKAGE = "https://${azurerm_storage_account.storage.name}.blob.core.windows.net/${azurerm_storage_container.deployments.name}/${azurerm_storage_blob.appcode.name}${data.azurerm_storage_account_sas.sas.sas}"
         WEBSITE_LOAD_USER_PROFILE = 1
-    }
+    
+    }, var.variables)
+
 
     
     tags = {
