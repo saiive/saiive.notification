@@ -53,5 +53,5 @@ variable "environment_tag" {
 }
 
 variable "app_version" {
-	default = ""
+	default = "20210514.1"
 }

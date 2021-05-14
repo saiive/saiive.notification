@@ -15,7 +15,7 @@ namespace Saiive.Alert.Functions.Functions
             _check = check;
         }
 
-        [FunctionName("Timer10Min")]
+        [FunctionName("Timer10MinNewCoinbase")]
         public async Task Run([TimerTrigger("0 */10 * * * *", RunOnStartup = true)]TimerInfo myTimer, ILogger logger)
         {
             logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");

@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "data_storage" {
-  name                     = "${var.environment}ti2gotablestorage"
+  name                     = "${var.environment}${var.name}"
   resource_group_name      = var.resource_group
   location                 = var.location
   account_tier             = "Standard"

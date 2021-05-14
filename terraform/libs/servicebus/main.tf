@@ -17,8 +17,8 @@ resource "azurerm_servicebus_topic" "topic" {
   enable_partitioning = true
 }
 
-resource "azurerm_servicebus_subscription" "telgram" {
-  name                  = "telgram"
+resource "azurerm_servicebus_subscription" "telegram" {
+  name                  = "telegram"
   resource_group_name   = var.resource_group
   namespace_name        = azurerm_servicebus_namespace.servicebus.name
   topic_name            = azurerm_servicebus_topic.topic.name
@@ -32,7 +32,7 @@ resource "azurerm_servicebus_subscription_rule" "subscription_rule_tg" {
   namespace_name        = azurerm_servicebus_namespace.servicebus.name
   topic_name            = azurerm_servicebus_topic.topic.name
 
-  subscription_name   = azurerm_servicebus_subscription.telgram.name
+  subscription_name   = azurerm_servicebus_subscription.telegram.name
   filter_type         = "CorrelationFilter"
 
   correlation_filter {
@@ -55,7 +55,7 @@ resource "azurerm_servicebus_subscription_rule" "subscription_rule_mail" {
   namespace_name        = azurerm_servicebus_namespace.servicebus.name
   topic_name            = azurerm_servicebus_topic.topic.name
 
-  subscription_name   = azurerm_servicebus_subscription.telgram.name
+  subscription_name   = azurerm_servicebus_subscription.telegram.name
   filter_type         = "CorrelationFilter"
 
   correlation_filter {

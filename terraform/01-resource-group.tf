@@ -2,7 +2,7 @@
 
 # Create a resource group
 resource "azurerm_resource_group" "rg" {
-  name     = var.prefix
+  name     = "${var.environment}-${var.prefix}"
   location = "West Europe"
 
   tags = {

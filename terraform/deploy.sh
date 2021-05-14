@@ -4,7 +4,7 @@
 # rm -rf .terraform/environment
 
 
-terraform init -reconfigure -backend-config=backends/$1.tf 
+terraform init -backend-config=backends/$1.tf 
 
 terraform workspace new $2 2>/dev/null
 

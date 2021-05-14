@@ -13,3 +13,6 @@ variable "prefix" {
 variable "environment" {
 
 }
+variable "name" {
+	
+}

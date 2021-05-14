@@ -97,11 +97,10 @@ resource "azurerm_function_app" "functions" {
     dynamic "connection_string" {
         for_each = var.connection_strings    
         content {
-            name = connection_string.name
-            type = connection_string.type
-            value = connection_string.value
+            name = connection_string.value.name
+            type = connection_string.value.type
+            value = connection_string.value.value
         }
-        
     }
 
     app_settings = merge({

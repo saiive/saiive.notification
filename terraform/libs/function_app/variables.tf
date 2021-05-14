@@ -37,7 +37,7 @@ variable "variables" {
 }
 
 variable "connection_strings" {
-	type = list(any)
+	type = list
 
 	default = []
 }
