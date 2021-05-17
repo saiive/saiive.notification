@@ -55,3 +55,7 @@ variable "environment_tag" {
 variable "app_version" {
 	default = "20210514.1"
 }
+
+variable "sender_mail" {
+  
+}

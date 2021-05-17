@@ -70,6 +70,8 @@ module "function_app_messanger" {
   ]
 
   variables = {
-    "SubscriptionsTable"    = module.table_storage_subscriptions.table
+    "SubscriptionsTable"    = module.table_storage_subscriptions.table,
+    "SendGridApiKey"        = data.azurerm_key_vault_secret.send_grid_key.value,
+    "SenderMail"            = var.sender_mail
   }
 }

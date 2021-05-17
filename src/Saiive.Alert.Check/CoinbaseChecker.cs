@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Saiive.Alert.Abstractions;
 using Saiive.Alert.Abstractions.Model;
 using Saiive.Alert.Check.Options;
 using Saiive.SuperNode.Client.Api;
@@ -12,10 +11,10 @@ using Saiive.SuperNode.Client.Client;
 
 namespace Saiive.Alert.Check
 {
-    internal class AlertCheck : IAlertCheck
+    internal class CoinbaseChecker : IChecker
     {
         private readonly IOptions<AlertConfig> _config;
-        private readonly ILogger<AlertCheck> _logger;
+        private readonly ILogger<CoinbaseChecker> _logger;
         private readonly ApiClient _client;
 
         private readonly AddressApi _addressApi;
@@ -26,7 +25,7 @@ namespace Saiive.Alert.Check
             "🎉🎉 {0} Minted new coinbase\nRewards received {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
 
 
-        public AlertCheck(IOptions<AlertConfig> config,ILogger<AlertCheck> logger)
+        public CoinbaseChecker(IOptions<AlertConfig> config,ILogger<CoinbaseChecker> logger)
         {
             _config = config;
             _logger = logger;
@@ -66,7 +65,7 @@ namespace Saiive.Alert.Check
                             {
                                 var explorerUrl =
                                     $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintTxId})";
-                                ret.Add(new NotifyMessage(subscription.NotificationConnectionString)
+                                ret.Add(new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey, subscription.PartitionKey)
                                 {
                                     PubKey = subscription.PublicKey,
                                     Message = String.Format(_defaultTemplate, subscription.PublicKey, (tx.Value/ 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl)
@@ -92,6 +91,14 @@ namespace Saiive.Alert.Check
                 _logger.LogError("Unknown error,...", e);
             }
             return (ret, currentBlockHeight);
+        }
+
+        public Task<int> GetCurrentBlockHeight()
+        {
+            var blockTip = _blockApi.ApiV1NetworkCoinBlockTipGet(_config.Value.Coin.ToUpperInvariant(),
+                _config.Value.Network.ToLowerInvariant());
+
+            return Task.FromResult(blockTip.Height.Value);
         }
     }
 }

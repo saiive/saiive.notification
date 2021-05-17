@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Saiive.Alert.Messenger": {
+      "commandName": "Project",
+      "commandLineArgs": "start -p 7072"
+    }
+  }
+}

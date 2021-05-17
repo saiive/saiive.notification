@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Saiive.Alert.Functions": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Key": "Value"
+      }
+    }
+  }
+}

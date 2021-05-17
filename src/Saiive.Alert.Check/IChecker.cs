@@ -5,8 +5,10 @@ using Saiive.Alert.Abstractions.Model;
 
 namespace Saiive.Alert.Check
 {
-    public interface IAlertCheck
+    public interface IChecker
     {
         Task<(List<NotifyMessage> Notifications, int CurrentBlockHeight)> CheckAlerts(List<SubscriptionsEntity> subscriptions);
+
+        Task<int> GetCurrentBlockHeight();
     }
 }

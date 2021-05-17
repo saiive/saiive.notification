@@ -19,14 +19,18 @@ namespace Saiive.Alert.Messenger
             _telegramHandler = telegramHandler;
         }
         [FunctionName("TelegramMessageHandler")]
-        public async Task Run([ServiceBusTrigger("message", "telegram", Connection = "MessageTopic")]Message mySbMsg, ILogger log)
+        public async Task Run([ServiceBusTrigger("message", "telegram", Connection = "MessageTopic")] Message mySbMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
 
             try
             {
+                if (mySbMsg.To != "telegram")
+                {
+                    return;
+                }
                 var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
-                await _telegramHandler.Send(message);
+             //   await _telegramHandler.Send(message);
             }
             catch(Exception e)
             {

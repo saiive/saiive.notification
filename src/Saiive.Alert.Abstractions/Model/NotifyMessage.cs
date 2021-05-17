@@ -6,9 +6,11 @@ namespace Saiive.Alert.Abstractions.Model
 {
     public class NotifyMessage
     {
-        public NotifyMessage(string connectionString)
+        public NotifyMessage(string connectionString, string rowKey, string partitionKey)
         {
             ConnectionString = connectionString;
+            RowKey = rowKey;
+            PartitionKey = partitionKey;
             ConnectionStringParts = connectionString.Split(';')
                 .Select(t => t.Split(new char[] { '=' }, 2))
                 .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
@@ -22,5 +24,8 @@ namespace Saiive.Alert.Abstractions.Model
         public string ConnectionString { get;  }
         public string PubKey { get; set; }
         public string Message { get; set; }
+
+        public string RowKey { get;  }
+        public string PartitionKey { get; }
     }
 }

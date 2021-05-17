@@ -17,9 +17,9 @@ namespace Saiive.Alert.Functions.Functions
 {
     public class TimerFunction
     {
-        private readonly IAlertCheck _check;
+        private readonly IChecker _check;
 
-        public TimerFunction(IAlertCheck check)
+        public TimerFunction(IChecker check)
         {
             _check = check;
         }
@@ -59,9 +59,12 @@ namespace Saiive.Alert.Functions.Functions
 
         private async Task CheckNewCoinbases(CloudTable cloudTable, string paritionKey, IAsyncCollector<Message> notificationBus)
         {
-            var rangeQuery = new TableQuery<SubscriptionsEntity>().Where(
+            var rangeQuery = new TableQuery<SubscriptionsEntity>().Where(TableQuery.CombineFilters(
                 TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
-                    paritionKey));
+                    paritionKey),
+                TableOperators.And,
+                TableQuery.GenerateFilterConditionForBool("IsEnabled", QueryComparisons.Equal,
+                    true)));
 
 
             var entities = await cloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null);
@@ -73,7 +76,8 @@ namespace Saiive.Alert.Functions.Functions
                 {
                     CorrelationId = notification.PubKey,
                     Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification)),
-                    To = notification.Type
+                    To = notification.Type,
+                    
                 };
                 await notificationBus.AddAsync(message);
             }

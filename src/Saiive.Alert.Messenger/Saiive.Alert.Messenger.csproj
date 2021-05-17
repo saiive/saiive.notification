@@ -8,6 +8,8 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
+    <PackageReference Include="SendGrid" Version="9.23.1" />
+    <PackageReference Include="SendGrid.Extensions.DependencyInjection" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Saiive.Alert.Telegram\Saiive.Alert.Telegram.csproj" />

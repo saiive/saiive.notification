@@ -36,6 +36,9 @@ namespace Saiive.Alert.Abstractions.Model
         [JsonProperty("notificationConnectionString")]
         public string NotificationConnectionString{ get; set; }
 
+        [JsonProperty("isEnabled")]
+        public bool IsEnabled { get; set; }
+
         private void SetPartitionKey()
         {
             PartitionKey = $"{AlertType}_{Interval}";
