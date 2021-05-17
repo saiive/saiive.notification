@@ -1,6 +1,6 @@
 using System;
 
-namespace IO.Swagger.Client {
+namespace Saiive.SuperNode.Client.Client {
   /// <summary>
   /// API Exception
   /// </summary>

@@ -1,11 +1,11 @@
 output "storage" {
-    value = azurerm_storage_account.data_storage.name
+    value = var.storage_account
 }
 
-output "subscription_table" {
+output "table" {
     value = azurerm_storage_table.table.name
 }
 
 output "storage_connection_string" {
-    value = azurerm_storage_account.data_storage.primary_connection_string
+    value = var.storage_account_connection_string
 }

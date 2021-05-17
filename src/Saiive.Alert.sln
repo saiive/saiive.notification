@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert", "Saiive.Alert\Saiive.Alert.csproj", "{F1C35A40-4EFA-4C0F-949F-39167D9979AC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Telegram", "Saiive.Alert.Telegram\Saiive.Alert.Telegram.csproj", "{85D8AFE2-4921-4197-BD90-A0125612C72A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Check", "Saiive.Alert.Check\Saiive.Alert.Check.csproj", "{1D2F3EB1-F21F-4B88-927A-41A15AA79782}"
@@ -17,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.SuperNode.Client", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Functions", "Saiive.Alert.Functions\Saiive.Alert.Functions.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saiive.Alert.Messenger", "Saiive.Alert.Messenger\Saiive.Alert.Messenger.csproj", "{E5320765-221D-47F9-A31B-F0A46BC359C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Alert.Messenger", "Saiive.Alert.Messenger\Saiive.Alert.Messenger.csproj", "{E5320765-221D-47F9-A31B-F0A46BC359C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 App", "00 App", "{8170EB74-F14C-41D1-B6BF-56EF791FAFAC}"
 EndProject
@@ -29,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F1C35A40-4EFA-4C0F-949F-39167D9979AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1C35A40-4EFA-4C0F-949F-39167D9979AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1C35A40-4EFA-4C0F-949F-39167D9979AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1C35A40-4EFA-4C0F-949F-39167D9979AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{85D8AFE2-4921-4197-BD90-A0125612C72A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{85D8AFE2-4921-4197-BD90-A0125612C72A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85D8AFE2-4921-4197-BD90-A0125612C72A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,7 +60,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F1C35A40-4EFA-4C0F-949F-39167D9979AC} = {8170EB74-F14C-41D1-B6BF-56EF791FAFAC}
 		{85D8AFE2-4921-4197-BD90-A0125612C72A} = {5D0DD567-5472-4208-9DA0-613BD305A25A}
 		{1D2F3EB1-F21F-4B88-927A-41A15AA79782} = {5D0DD567-5472-4208-9DA0-613BD305A25A}
 		{ADF67EA1-D4CB-46DA-A6F7-D7449930D969} = {5D0DD567-5472-4208-9DA0-613BD305A25A}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Saiive.Alert.Abstractions;
+using Saiive.Alert.Abstractions.Model;
 using Saiive.Alert.Check.Abstractions;
 
 namespace Saiive.Alert.Check

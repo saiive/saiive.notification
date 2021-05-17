@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Saiive.Alert.Abstractions;
+using Saiive.Alert.Abstractions.Model;
 
 namespace Saiive.Alert.Check.Abstractions
 {

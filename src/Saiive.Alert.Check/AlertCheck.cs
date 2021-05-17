@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Alert.Abstractions;
+using Saiive.Alert.Abstractions.Model;
 using Saiive.Alert.Check.Options;
 using Saiive.SuperNode.Client.Api;
 using Saiive.SuperNode.Client.Client;
@@ -14,7 +15,6 @@ namespace Saiive.Alert.Check
     internal class AlertCheck : IAlertCheck
     {
         private readonly IOptions<AlertConfig> _config;
-        private readonly IAlertPublisher _publisher;
         private readonly ILogger<AlertCheck> _logger;
         private readonly ApiClient _client;
 
@@ -22,12 +22,13 @@ namespace Saiive.Alert.Check
         private readonly TransactionApi _txApi;
         private readonly BlockApi _blockApi;
 
-        private int _lastBlockHeight = -1;
+        private readonly string _defaultTemplate =
+            "🎉🎉 {0} Minted new coinbase\nRewards received {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
 
-        public AlertCheck(IOptions<AlertConfig> config, IAlertPublisher publisher, ILogger<AlertCheck> logger)
+
+        public AlertCheck(IOptions<AlertConfig> config,ILogger<AlertCheck> logger)
         {
             _config = config;
-            _publisher = publisher;
             _logger = logger;
 
             _client = new ApiClient(config.Value.SuperNodeUrl);
@@ -37,8 +38,10 @@ namespace Saiive.Alert.Check
         }
 
        
-        public async Task CheckAlerts()
+        public async Task<(List<NotifyMessage> Notifications, int CurrentBlockHeight)> CheckAlerts(List<SubscriptionsEntity> subscriptions)
         {
+            var ret = new List<NotifyMessage>();
+            var currentBlockHeight = 0;
             try
             {
                 var tasks = new List<Task>();
@@ -46,28 +49,27 @@ namespace Saiive.Alert.Check
                     _config.Value.Network.ToLowerInvariant());
 
                 _logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
-                foreach (var pub in _config.Value.PubKeys)
+                foreach (var subscription in subscriptions)
                 {
-                    var task = new Task(async () =>
+                    var task = new Task(() =>
                     {
                         try
                         {
                             var txs = _addressApi.ApiV1NetworkCoinTxsAddressGet(
                                 _config.Value.Coin.ToUpperInvariant(), _config.Value.Network.ToLowerInvariant(),
-                                pub.pubKey);
+                                subscription.PublicKey);
 
-                            _logger.LogInformation($"Check for {pub.name} with pubKey {pub.pubKey}");
+                            _logger.LogInformation($"Check for {subscription.Name} with pubKey {subscription.PublicKey}");
                             foreach (var tx in txs.Where(a =>
                                 a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue &&
-                                a.MintHeight > _lastBlockHeight))
+                                a.MintHeight > subscription.LastBlockHeight))
                             {
                                 var explorerUrl =
                                     $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintTxId})";
-                                await _publisher.Notify(new NotifyMessage
+                                ret.Add(new NotifyMessage(subscription.NotificationConnectionString)
                                 {
-                                    PubKey = pub.pubKey,
-                                    Message =
-                                        $"🎉🎉 {pub.name} Minted new coinbase\nRewards received {tx.Value / 100000000} $DFI\n\nTxId {tx.MintTxId}@{tx.MintHeight.Value}\n{explorerUrl}\n\n🍻🍻"
+                                    PubKey = subscription.PublicKey,
+                                    Message = String.Format(_defaultTemplate, subscription.PublicKey, (tx.Value/ 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl)
                                 });
                             }
                         }
@@ -82,12 +84,14 @@ namespace Saiive.Alert.Check
                 }
 
                 await Task.WhenAll(tasks);
-                _lastBlockHeight = blockTip.Height.Value;
+                currentBlockHeight = blockTip.Height.Value;
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError("Unknown error,...", e);
             }
+            return (ret, currentBlockHeight);
         }
     }
 }

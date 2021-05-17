@@ -47,8 +47,7 @@ namespace Saiive.Alert.Check
             }
 
             _logger.LogInformation($"Starting at blockheight {_lastBlockHeight}");
-
-            _pollingTimer = new Timer(async (s) => await _alertCheck.CheckAlerts(), null, TimeSpan.FromMilliseconds(1), _config.Value.Interval);
+            
             return Task.CompletedTask;
         }
 
