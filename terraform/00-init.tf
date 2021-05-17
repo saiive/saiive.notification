@@ -1,6 +1,6 @@
 terraform {
   backend "azurerm" {
-    key = "defi/saiive-alert.terraform.tfstate"
+    key = "alert/saiive-alert.terraform.tfstate"
   }
 }
 terraform {
@@ -57,5 +57,5 @@ variable "app_version" {
 }
 
 variable "sender_mail" {
-  
+
 }
