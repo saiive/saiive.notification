@@ -2,7 +2,7 @@ variables:
     Parameters.RestoreBuildProjects: '**/Saiive.Alert.sln'
     BuildConfiguration: 'Release'
     Parameters.AzureFunctionAlert: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
-    Parameters.AzureFunctionMessenger: 'src/Saiive.Alert.Functions/Saiive.Alert.Functions.csproj'
+    Parameters.AzureFunctionMessenger: 'src/Saiive.Alert.Messenger/Saiive.Alert.Messenger.csproj'
     vmImageName: 'ubuntu-latest'
 
 trigger:
