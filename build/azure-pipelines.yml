@@ -27,7 +27,6 @@ stages:
       inputs:
         command: restore
         projects: '$(Parameters.RestoreBuildProjects)'
-        vstsFeed: 'db32b6a4-1f6f-4165-8e05-002a0b39ef6a'
         includeNuGetOrg: true
 
     - task: DotNetCoreCLI@2
@@ -54,7 +53,6 @@ stages:
       inputs:
         command: restore
         projects: '$(Parameters.RestoreBuildProjects)'
-        vstsFeed: 'db32b6a4-1f6f-4165-8e05-002a0b39ef6a'
         includeNuGetOrg: true
         
     - task: DotNetCoreCLI@2
