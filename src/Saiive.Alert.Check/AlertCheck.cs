@@ -62,7 +62,7 @@ namespace Saiive.Alert.Check
                             _logger.LogInformation($"Check for {subscription.Name} with pubKey {subscription.PublicKey}");
                             foreach (var tx in txs.Where(a =>
                                 a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue &&
-                                a.MintHeight > subscription.LastBlockHeight))
+                                a.MintHeight > Convert.ToInt32(subscription.LastBlockHeight)))
                             {
                                 var explorerUrl =
                                     $"[Explorer]({_config.Value.ExplorerBaseUrl}{_config.Value.ExplorerTxPrefix}{tx.MintTxId})";

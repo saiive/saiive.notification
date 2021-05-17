@@ -25,7 +25,7 @@ namespace Saiive.Alert.Abstractions.Model
         }
 
         [JsonProperty("lastBlockHeight")]
-        public int LastBlockHeight { get; set; }
+        public string LastBlockHeight { get; set; }
 
         [JsonProperty("publicKey")]
         public string PublicKey { get; set; }

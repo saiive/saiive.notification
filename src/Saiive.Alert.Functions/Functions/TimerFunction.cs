@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,18 +25,43 @@ namespace Saiive.Alert.Functions.Functions
         }
 
         [FunctionName("Timer1MinNewCoinbase")]
-        public async Task CheckNewCoinbaseTx([TimerTrigger("0 */1 * * * *", RunOnStartup = true)]TimerInfo myTimer,
+        public async Task CheckNewCoinbaseTx1Min([TimerTrigger("0 */1 * * * *", RunOnStartup = true)] TimerInfo myTimer,
             [Table("%SubscriptionsTable%", Connection = "Subscriptions")] CloudTable cloudTable,
-            [Table("%ConfigTable%", "config", "last_height_1min", Connection = "Config")] ConfigEntity lastHeight,
-
             [ServiceBus("message", Connection = "MessageTopic")] IAsyncCollector<Message> notificationBus,
             ILogger logger)
         {
-            logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx1Min)}] executed at: {DateTime.Now}");
 
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase1Min, notificationBus);
+        }
+
+        [FunctionName("Timer5MinNewCoinbase")]
+        public async Task CheckNewCoinbaseTx5Min([TimerTrigger("0 */5 * * * *", RunOnStartup = true)] TimerInfo myTimer,
+            [Table("%SubscriptionsTable%", Connection = "Subscriptions")] CloudTable cloudTable,
+            [ServiceBus("message", Connection = "MessageTopic")] IAsyncCollector<Message> notificationBus,
+            ILogger logger)
+        {
+            logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx5Min)}] executed at: {DateTime.Now}");
+
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase5Min, notificationBus);
+        }
+
+        [FunctionName("Timer10MinNewCoinbase")]
+        public async Task CheckNewCoinbaseTx10Min([TimerTrigger("0 */10 * * * *", RunOnStartup = true)] TimerInfo myTimer,
+            [Table("%SubscriptionsTable%", Connection = "Subscriptions")] CloudTable cloudTable,
+            [ServiceBus("message", Connection = "MessageTopic")] IAsyncCollector<Message> notificationBus,
+            ILogger logger)
+        {
+            logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx10Min)}] executed at: {DateTime.Now}");
+
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase10Min, notificationBus);
+        }
+
+        private async Task CheckNewCoinbases(CloudTable cloudTable, string paritionKey, IAsyncCollector<Message> notificationBus)
+        {
             var rangeQuery = new TableQuery<SubscriptionsEntity>().Where(
                 TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
-                        SubscriptionConstants.PartitionKeyCoinbase1Min));
+                    paritionKey));
 
 
             var entities = await cloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null);
@@ -54,7 +80,7 @@ namespace Saiive.Alert.Functions.Functions
 
             foreach (var sub in entities)
             {
-                sub.LastBlockHeight = notifications.CurrentBlockHeight;
+                sub.LastBlockHeight = notifications.CurrentBlockHeight.ToString(CultureInfo.InvariantCulture);
 
                 var operation = TableOperation.Replace(sub);
                 await cloudTable.ExecuteAsync(operation);

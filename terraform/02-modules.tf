@@ -35,17 +35,11 @@ module "function_app" {
       name  = "Subscriptions",
       type  = "Custom",
       value = module.table_storage_subscriptions.storage_connection_string
-    },
-    {
-      name  = "Config",
-      type  = "Custom",
-      value = module.config_storage_subscriptions.storage_connection_string
     }
   ]
 
   variables = {
-    "SubscriptionsTable"    = module.table_storage_subscriptions.table,
-    "ConfigTable"           = module.config_storage_subscriptions.table
+    "SubscriptionsTable"    = module.table_storage_subscriptions.table
   }
 }
 
@@ -72,16 +66,10 @@ module "function_app_messanger" {
       name  = "Subscriptions",
       type  = "Custom",
       value = module.table_storage_subscriptions.storage_connection_string
-    },
-    {
-      name  = "Config",
-      type  = "Custom",
-      value = module.config_storage_subscriptions.storage_connection_string
     }
   ]
 
   variables = {
-    "SubscriptionsTable"    = module.table_storage_subscriptions.table,
-    "ConfigTable"           = module.config_storage_subscriptions.table
+    "SubscriptionsTable"    = module.table_storage_subscriptions.table
   }
 }
