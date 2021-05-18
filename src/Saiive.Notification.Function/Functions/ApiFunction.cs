@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Table;
@@ -23,6 +25,7 @@ namespace Saiive.Notification.Function.Functions
 
     public class ApiFunction
     {
+        private const string FunctionNameAddress = "api/";
         private readonly IChecker _check;
 
         public ApiFunction(IChecker check)
@@ -31,6 +34,9 @@ namespace Saiive.Notification.Function.Functions
         }
 
         [FunctionName("AddSubscription")]
+        [OpenApiOperation(FunctionNameAddress + "AddSubscription", "AddSubscription")]
+        [OpenApiRequestBody("application/json", typeof(SubscriptionsEntity))]
+        [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SubscriptionsEntity))]
         public async Task<IActionResult> Add(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "add")]
             HttpRequestMessage  req,
@@ -94,6 +100,9 @@ namespace Saiive.Notification.Function.Functions
         }
 
         [FunctionName("RemoveSubscription")]
+        [OpenApiOperation(FunctionNameAddress + "RemoveSubscription", "RemoveSubscription")]
+        [OpenApiRequestBody("application/json", typeof(SubscriptionsEntity))]
+        [OpenApiResponseWithBody(HttpStatusCode.NoContent, "application/json", typeof(void))]
         public async Task<IActionResult> Remove(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "remove")]
             IdRequest req,

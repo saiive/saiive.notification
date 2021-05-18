@@ -1,17 +1,28 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using System.Runtime.Serialization;
+using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Saiive.Notification.Abstractions.Model
 {
+    
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Network
     {
+        [EnumMember(Value = "mainnet")]
         Mainnet,
+        [EnumMember(Value = "testnet")]
         Testnet
     }
 
+
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Coin
     {
-        DFI
+        [EnumMember(Value = "DFI")]
+        DFI,
+        [EnumMember(Value = "BTC")]
+        Bitcoin
     }
 
     public class SubscriptionsEntity : TableEntity
@@ -32,6 +43,7 @@ namespace Saiive.Notification.Abstractions.Model
         }
 
         [JsonProperty("interval")]
+        [JsonIgnore]
         public Interval Interval
         {
             get => _interval;
@@ -47,6 +59,7 @@ namespace Saiive.Notification.Abstractions.Model
         public Coin Coin { get; set; }
 
         [JsonProperty("lastBlockHeight")]
+        [JsonIgnore]
         public int LastBlockHeight { get; set; }
 
         [JsonProperty("publicKey")]
@@ -59,6 +72,7 @@ namespace Saiive.Notification.Abstractions.Model
         public string NotificationConnectionString{ get; set; }
 
         [JsonProperty("isEnabled")]
+        [JsonIgnore]
         public bool IsEnabled { get; set; }
 
         private void SetPartitionKey()
