@@ -42,6 +42,7 @@ resource "azurerm_key_vault_secret" "send_grid_key" {
   }
 }
 data "azurerm_key_vault_secret" "send_grid_key" {
+  depends_on = [azurerm_key_vault_secret.send_grid_key]
   name         = "sendgridkey"
   key_vault_id = azurerm_key_vault.keyvault.id
 }

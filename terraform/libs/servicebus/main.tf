@@ -1,5 +1,5 @@
 resource "azurerm_servicebus_namespace" "servicebus" {
-  name                  = "${var.environment}-${var.prefix}-servicebus"
+  name                  = "${var.environment}-${var.prefix}-sb"
   resource_group_name   = var.resource_group
   location              = var.location
   sku                   = "Standard"
