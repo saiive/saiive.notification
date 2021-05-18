@@ -34,7 +34,7 @@ namespace Saiive.Notification.Function.OpenApi
         /// <returns>Open API document in a format of either JSON or YAML.</returns>
         [FunctionName(nameof(RenderSwaggerDocumentC))]
         public static async Task<IActionResult> RenderSwaggerDocumentC(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "openapi/swagger.{extension}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "swagger/swagger.{extension}")] HttpRequest req,
             string extension,
             ILogger log)
         {
@@ -114,7 +114,7 @@ namespace Saiive.Notification.Function.OpenApi
                                       .AddMetadata(context.OpenApiInfo)
                                       .AddServer(req, context.HttpSettings.RoutePrefix)
                                       .BuildAsync()
-                                      .RenderAsync("openapi/swagger.json", context.GetSwaggerAuthKey())
+                                      .RenderAsync("swagger/swagger.json", context.GetSwaggerAuthKey())
                                       .ConfigureAwait(false);
 
             var content = new ContentResult()

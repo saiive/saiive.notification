@@ -93,6 +93,7 @@ resource "azurerm_function_app" "functions" {
     app_service_plan_id = azurerm_app_service_plan.asp.id
     storage_connection_string = azurerm_storage_account.storage.primary_connection_string
     version = "~3"
+    https_only = true
 
     dynamic "connection_string" {
         for_each = var.connection_strings    
@@ -106,9 +107,6 @@ resource "azurerm_function_app" "functions" {
     app_settings = merge({
         https_only = true
         FUNCTIONS_WORKER_RUNTIME = "dotnet"
-        OpenApi__Info__License__Name = "~10"
-        OpenApi__Info__Title = "PoC APIM Azure Functions"
-        OpenApi__Info__Version = "3.0.0"
         FUNCTION_APP_EDIT_MODE = "readonly"
         WEBSITE_ENABLE_SYNC_UPDATE_SITE = "false"
         HASH = base64encode(filesha256("${var.app_version}-${var.function_app_file}"))

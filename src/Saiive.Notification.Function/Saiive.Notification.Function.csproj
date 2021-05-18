@@ -5,9 +5,6 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="C:\Users\patri\.nuget\packages\aliencube.azurefunctions.extensions.openapi\3.1.1\contentFiles\any\netstandard2.0\OpenApi\OpenApiHttpTrigger.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi" Version="3.1.1" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.3.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" />
