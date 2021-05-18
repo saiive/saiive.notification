@@ -123,7 +123,7 @@ resource "azurerm_function_app" "functions" {
     }
 }
 locals {
-    cname = var.environment == "prod" ? "" :  "${var.environment}-"
+    cname = var.environment == "prod" ? var.dns_name :  "${var.environment}-${var.dns_name}"
 }
 
 resource "azurerm_dns_cname_record" "function_domain_name" {
@@ -134,7 +134,25 @@ resource "azurerm_dns_cname_record" "function_domain_name" {
   record              = azurerm_function_app.functions.default_hostname
 }
 
-resource "azurerm_app_service_custom_hostname_binding" "example" {
+resource "azurerm_dns_txt_record" "function_domain_name_txt" {
+  name                = "asuid.${local.cname}"
+  zone_name           = var.dns_zone
+  resource_group_name = var.dns_zone_resource_group
+  ttl                 = 300
+
+  record {
+    value = azurerm_function_app.functions.custom_domain_verification_id
+  }
+}
+
+
+resource "azurerm_app_service_custom_hostname_binding" "binding" {
+
+ depends_on = [
+     azurerm_dns_cname_record.function_domain_name,
+     azurerm_dns_txt_record.function_domain_name_txt
+ ]
+
   hostname            = "${local.cname}.${var.dns_zone}"
   app_service_name    = azurerm_function_app.functions.name
   resource_group_name = var.resource_group

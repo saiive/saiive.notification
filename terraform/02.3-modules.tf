@@ -22,7 +22,7 @@ module "function_app" {
   environment_tag = var.environment_tag
   resource_group = azurerm_resource_group.rg.name
   
-  dns_name = "api"
+  dns_name = "notification"
   dns_zone = var.dns_zone
   dns_zone_resource_group = var.dns_zone_resource_group
 
@@ -57,7 +57,7 @@ module "function_app_messanger" {
   environment_tag = var.environment_tag
   resource_group = azurerm_resource_group.rg.name
   
-  dns_name = "messenger"
+  dns_name = "notification-messenger"
   dns_zone = var.dns_zone
   dns_zone_resource_group = var.dns_zone_resource_group
 
