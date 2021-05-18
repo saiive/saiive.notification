@@ -29,7 +29,7 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx1Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey1Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, Interval.Min_1 , notificationBus);
         }
 
         [FunctionName("Timer5MinNewCoinbase")]
@@ -40,7 +40,7 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx5Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey5Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, Interval.Min_5, notificationBus);
         }
 
         [FunctionName("Timer10MinNewCoinbase")]
@@ -51,18 +51,17 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx10Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey10Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, Interval.Min_10, notificationBus);
         }
 
-        private async Task CheckNewCoinbases(CloudTable cloudTable, string paritionKey, IAsyncCollector<Message> notificationBus)
+        private async Task CheckNewCoinbases(CloudTable cloudTable, Interval interval, IAsyncCollector<Message> notificationBus)
         {
             var rangeQuery = new TableQuery<SubscriptionsEntity>().Where(TableQuery.CombineFilters(
-                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
-                    paritionKey),
+                TableQuery.GenerateFilterCondition("IntervalString", QueryComparisons.Equal,
+                    interval.ToString()),
                 TableOperators.And,
                 TableQuery.GenerateFilterConditionForBool("IsEnabled", QueryComparisons.Equal,
                     true)));
-
 
             var entities = await cloudTable.ExecuteQuerySegmentedAsync(rangeQuery, null);
             var notifications = await _check.CheckAlerts(entities.Results);

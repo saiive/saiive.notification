@@ -56,6 +56,7 @@ namespace Saiive.Notification.Function.Functions
             subscription.Interval = Interval.Min_10;
             subscription.LastBlockHeight = curBlockHeight;
             subscription.AlertType = subscription.AlertType;
+            subscription.PartitionKey = "free";
 
             var connectionString = subscription.NotificationConnectionString.Split(';')
                 .Select(t => t.Split(new char[] { '=' }, 2))

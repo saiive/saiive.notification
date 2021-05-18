@@ -28,30 +28,18 @@ namespace Saiive.Notification.Abstractions.Model
 
     public class SubscriptionsEntity : TableEntity
     {
-        private AlertType _alertType;
-        private Interval _interval;
-
         public SubscriptionsEntity()
         {
             Network = Network.Mainnet;
         }
 
         [JsonProperty("type")]
-        public AlertType AlertType
-        {
-            get => _alertType;
-            set { _alertType = value; SetPartitionKey(); }
-        }
+        public AlertType AlertType { get; set; }
 
         [JsonProperty("interval")]
         [JsonIgnore]
-        public Interval Interval
-        {
-            get => _interval;
-            set { _interval = value;
-                SetPartitionKey();
-            }
-        }
+        public Interval Interval { get; set; }
+
         [JsonIgnore]
         public string IntervalString
         {
@@ -139,11 +127,6 @@ namespace Saiive.Notification.Abstractions.Model
         [JsonProperty("isEnabled")]
         [JsonIgnore]
         public bool IsEnabled { get; set; }
-
-        private void SetPartitionKey()
-        {
-            PartitionKey = $"{Interval}";
-        }
-
+        
     }
 }
