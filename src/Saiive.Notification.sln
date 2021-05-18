@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Notification.Abstrac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.SuperNode.Client", "Saiive.SuperNode.Client\Saiive.SuperNode.Client.csproj", "{90AAF4B4-312F-48AD-AE12-A10A2E50777F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Notification.Function", "Saiive.Notification.Functions\Saiive.Notification.Function.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Notification.Function", "Saiive.Notification.Function\Saiive.Notification.Function.csproj", "{33731629-A0CC-4EC5-A4E2-85CC588D7599}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saiive.Notification.Messenger", "Saiive.Notification.Messenger\Saiive.Notification.Messenger.csproj", "{E5320765-221D-47F9-A31B-F0A46BC359C6}"
 EndProject
