@@ -32,10 +32,9 @@ namespace Saiive.Notification.Function.OpenApi
         /// <param name="extension">File extension representing the document format. This MUST be either "json" or "yaml".</param>
         /// <param name="log"><see cref="ILogger"/> instance.</param>
         /// <returns>Open API document in a format of either JSON or YAML.</returns>
-        [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerDocument))]
-        [OpenApiIgnore]
-        public static async Task<IActionResult> RenderSwaggerDocument(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "swagger.{extension}")] HttpRequest req,
+        [FunctionName(nameof(RenderSwaggerDocumentC))]
+        public static async Task<IActionResult> RenderSwaggerDocumentC(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "openapi/swagger.{extension}")] HttpRequest req,
             string extension,
             ILogger log)
         {
@@ -69,10 +68,9 @@ namespace Saiive.Notification.Function.OpenApi
         /// <param name="extension">File extension representing the document format. This MUST be either "json" or "yaml".</param>
         /// <param name="log"><see cref="ILogger"/> instance.</param>
         /// <returns>Open API document in a format of either JSON or YAML.</returns>
-        [FunctionName(nameof(OpenApiHttpTrigger.RenderOpenApiDocument))]
-        [OpenApiIgnore]
-        public static async Task<IActionResult> RenderOpenApiDocument(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "openapi/{version}.{extension}")] HttpRequest req,
+        [FunctionName(nameof(RenderOpenApiDocumentC))]
+        public static async Task<IActionResult> RenderOpenApiDocumentC(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "openapi/v/{version}.{extension}")] HttpRequest req,
             string version,
             string extension,
             ILogger log)
@@ -105,10 +103,9 @@ namespace Saiive.Notification.Function.OpenApi
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <param name="log"><see cref="ILogger"/> instance.</param>
         /// <returns>Swagger UI in HTML.</returns>
-        [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUI))]
-        [OpenApiIgnore]
-        public static async Task<IActionResult> RenderSwaggerUI(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "swagger/ui")] HttpRequest req,
+        [FunctionName(nameof(RenderSwaggerUIC))]
+        public static async Task<IActionResult> RenderSwaggerUIC(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "openapi/ui")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation($"SwaggerUI page was requested.");
@@ -117,7 +114,7 @@ namespace Saiive.Notification.Function.OpenApi
                                       .AddMetadata(context.OpenApiInfo)
                                       .AddServer(req, context.HttpSettings.RoutePrefix)
                                       .BuildAsync()
-                                      .RenderAsync("swagger.json", context.GetSwaggerAuthKey())
+                                      .RenderAsync("openapi/swagger.json", context.GetSwaggerAuthKey())
                                       .ConfigureAwait(false);
 
             var content = new ContentResult()
