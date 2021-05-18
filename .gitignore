@@ -44,3 +44,6 @@ packages/
 .terraform/
 terraform/deploy-dev.sh
 terraform/deploy.sh
+
+terraform/.deploy.sh
+terraform/.deploy-dev.sh
