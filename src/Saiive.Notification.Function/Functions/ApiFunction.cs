@@ -55,6 +55,7 @@ namespace Saiive.Notification.Function.Functions
             subscription.RowKey = Guid.NewGuid().ToString();
             subscription.Interval = Interval.Min_10;
             subscription.LastBlockHeight = curBlockHeight;
+            subscription.AlertType = subscription.AlertType;
 
             var connectionString = subscription.NotificationConnectionString.Split(';')
                 .Select(t => t.Split(new char[] { '=' }, 2))

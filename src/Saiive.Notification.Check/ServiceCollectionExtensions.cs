@@ -9,7 +9,10 @@ namespace Saiive.Notification.Check
     {
         public static IServiceCollection AddAlertCheckerFunction(this IServiceCollection services)
         {
-            services.AddSingleton<IChecker, CoinbaseChecker>();
+            services.AddSingleton<IChecker, CheckFactory>();
+
+            services.AddSingleton<CoinbaseChecker>();
+            services.AddSingleton<UtxoChecker>();
 
             var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
             services.Configure<AlertConfig>(

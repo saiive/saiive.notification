@@ -7,9 +7,11 @@ namespace Saiive.Notification.Abstractions.Model
     [JsonConverter(typeof(StringEnumConverter))]
     public enum AlertType
     {
-        [EnumMember(Value = "Coinbase")]
+        [EnumMember(Value = "unknown")]
+        Unknown,
+        [EnumMember(Value = "coinbase")]
         Coinbase,
-        [EnumMember(Value = "Utxo")]
+        [EnumMember(Value = "utxo")]
         Utxo
     }
 }

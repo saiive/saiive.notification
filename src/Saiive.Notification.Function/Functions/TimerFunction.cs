@@ -29,7 +29,7 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx1Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase1Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey1Min, notificationBus);
         }
 
         [FunctionName("Timer5MinNewCoinbase")]
@@ -40,7 +40,7 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx5Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase5Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey5Min, notificationBus);
         }
 
         [FunctionName("Timer10MinNewCoinbase")]
@@ -51,7 +51,7 @@ namespace Saiive.Notification.Function.Functions
         {
             logger.LogInformation($"C# Timer trigger function [{nameof(CheckNewCoinbaseTx10Min)}] executed at: {DateTime.Now}");
 
-            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKeyCoinbase10Min, notificationBus);
+            await CheckNewCoinbases(cloudTable, SubscriptionConstants.PartitionKey10Min, notificationBus);
         }
 
         private async Task CheckNewCoinbases(CloudTable cloudTable, string paritionKey, IAsyncCollector<Message> notificationBus)

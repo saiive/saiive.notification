@@ -2,8 +2,8 @@
 {
     public class SubscriptionConstants
     {
-        public static string PartitionKeyCoinbase1Min = $"{AlertType.Coinbase}_{Interval.Min_1}";
-        public static string PartitionKeyCoinbase5Min = $"{AlertType.Coinbase}_{Interval.Min_5}";
-        public static string PartitionKeyCoinbase10Min = $"{AlertType.Coinbase}_{Interval.Min_10}";
+        public static string PartitionKey1Min = $"{Interval.Min_1}";
+        public static string PartitionKey5Min = $"{Interval.Min_5}";
+        public static string PartitionKey10Min = $"{Interval.Min_10}";
     }
 }
