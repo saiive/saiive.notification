@@ -92,7 +92,7 @@ namespace Saiive.Notification.Function.Functions
             }
             else if (type == "telegram")
             {
-                var startMessage = $"Hello. Your friendly Masternode alert-service has started for {subscription.PublicKey} 🎉";
+                var startMessage = $"Hello. Your friendly Masternode alert-service has started! 🎉";
 
                 var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
                     subscription.PartitionKey)
