@@ -30,7 +30,7 @@ namespace Saiive.Notification.Messenger
                     return;
                 }
                 var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
-             //   await _telegramHandler.Send(message);
+                await _telegramHandler.Send(message);
             }
             catch(Exception e)
             {
