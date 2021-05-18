@@ -116,11 +116,26 @@ resource "azurerm_function_app" "functions" {
         WEBSITE_LOAD_USER_PROFILE = 1
     
     }, var.variables)
-
-
     
     tags = {
         Environment = var.environment_tag
         Version = var.app_version
     }
+}
+locals {
+    cname = var.environment == "prod" ? "" :  "${var.environment}-"
+}
+
+resource "azurerm_dns_cname_record" "function_domain_name" {
+  name                = local.cname
+  zone_name           = var.dns_zone
+  resource_group_name = var.dns_zone_resource_group
+  ttl                 = 300
+  record              = azurerm_function_app.functions.default_hostname
+}
+
+resource "azurerm_app_service_custom_hostname_binding" "example" {
+  hostname            = "${local.cname}.${var.dns_zone}"
+  app_service_name    = azurerm_function_app.functions.name
+  resource_group_name = var.resource_group
 }

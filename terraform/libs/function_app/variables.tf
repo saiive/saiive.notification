@@ -10,6 +10,9 @@ variable "location" {
 variable "resource_group" {
 	
 }
+variable "environment" {
+  
+}
 variable "environment_tag" {
   
 }
@@ -40,4 +43,14 @@ variable "connection_strings" {
 	type = list
 
 	default = []
+}
+
+variable "dns_name" {
+	
+}
+variable "dns_zone" {
+  
+}
+variable "dns_zone_resource_group" {
+
 }

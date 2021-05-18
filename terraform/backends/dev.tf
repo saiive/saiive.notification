@@ -1,3 +1,3 @@
-resource_group_name  = "defi-wallet-common"
-storage_account_name = "defichainterraform"
+resource_group_name  = "saiive-terraform"
+storage_account_name = "saiiveterraform "
 container_name       = "tf-container"

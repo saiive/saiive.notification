@@ -59,3 +59,10 @@ variable "app_version" {
 variable "sender_mail" {
 
 }
+
+variable "dns_zone" {
+
+}
+variable "dns_zone_resource_group" {
+
+}
