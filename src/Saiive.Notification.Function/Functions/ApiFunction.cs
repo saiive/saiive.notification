@@ -90,6 +90,25 @@ namespace Saiive.Notification.Function.Functions
                 await notificationBus.AddAsync(message);
 
             }
+            else if (type == "telegram")
+            {
+                var startMessage = $"Hello. Your friendly Masternode alert-service has started for {subscription.PublicKey} 🎉";
+
+                var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
+                    subscription.PartitionKey)
+                {
+                    Message = startMessage,
+                    PubKey = subscription.PublicKey
+                };
+
+                var message = new Message
+                {
+                    To = type,
+                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification))
+
+                };
+                await notificationBus.AddAsync(message);
+            }
             else
             {
                 subscription.IsEnabled = true;
