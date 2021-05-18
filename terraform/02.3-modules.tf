@@ -43,7 +43,17 @@ module "function_app" {
   ]
 
   variables = {
-    "SubscriptionsTable"    = module.table_storage_subscriptions.table
+    "SubscriptionsTable"    = module.table_storage_subscriptions.table,
+
+    "OpenApi__Info__Version" = "2.0.0",
+    "OpenApi__Info__Title" =  "Saiive.Notification Service",
+    "OpenApi__Info__Description"= "Provides a notification service for the DeFiChain blockchain",
+    "OpenApi__Info__TermsOfService"= "",
+    "OpenApi__Info__Contact__Name"= "Saiive.DeFiChain",
+    "OpenApi__Info__Contact__Email"= "office@saiive.com",
+    "OpenApi__Info__Contact__Url"= "",
+    "OpenApi__Info__License__Name"= "GPL v3",
+    "OpenApi__Info__License__Url"= ""
   }
 }
 
