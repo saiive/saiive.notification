@@ -2,7 +2,7 @@ data "azurerm_client_config" "current" {}
 
 
 resource "azurerm_key_vault" "keyvault" {
-  name                        = "${var.environment}-${var.prefix}-vault"
+  name                        = "${var.environment}-${var.prefix}"
   location                    = var.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
