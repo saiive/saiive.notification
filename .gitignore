@@ -42,3 +42,5 @@ src/automatica.core/Automatica.Web/dist
 packages/
 
 .terraform/
+terraform/deploy-dev.sh
+terraform/deploy.sh
