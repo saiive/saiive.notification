@@ -8,12 +8,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Saiive.Notification.Telegram
 {
-    public interface ITelegramHandler : IMessageHandler
-    {
-
-    }
-
-    public class TelegramBot : ITelegramHandler
+    public class TelegramBot : MessageHandler
     {
         private readonly ILogger<TelegramBot> _logger;
         
@@ -22,7 +17,7 @@ namespace Saiive.Notification.Telegram
             _logger = logger;
         }
         
-        public async Task Send(NotifyMessage message)
+        public override async Task Send(NotifyMessage message)
         {
             try
             {
@@ -39,5 +34,7 @@ namespace Saiive.Notification.Telegram
                 _logger.LogError("Error sending telegram message...", e);
             }
         }
+        
+        public override string Type => "telegram";
     }
 }

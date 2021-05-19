@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
@@ -8,11 +8,9 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
-    <PackageReference Include="SendGrid" Version="9.23.1" />
-    <PackageReference Include="SendGrid.Extensions.DependencyInjection" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Saiive.Notification.Telegram\Saiive.Notification.Telegram.csproj" />
+    <ProjectReference Include="..\Saiive.Notifications.Messenger.Core\Saiive.Notifications.Messenger.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

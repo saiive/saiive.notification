@@ -17,48 +17,44 @@ resource "azurerm_servicebus_topic" "topic" {
   enable_partitioning = true
 }
 
-resource "azurerm_servicebus_subscription" "telegram" {
-  name                  = "telegram"
-  resource_group_name   = var.resource_group
-  namespace_name        = azurerm_servicebus_namespace.servicebus.name
-  topic_name            = azurerm_servicebus_topic.topic.name
-  max_delivery_count    = 5
+module "notification_filter" {
+    source = "../service_bus_subscription"
+
+    name = "notification"
+    resource_group = var.resource_group
+    servicebus = azurerm_servicebus_namespace.servicebus.name
+    topic = azurerm_servicebus_topic.topic.name
+
+    to_filter = "notification"
 }
 
+module "added_filter" {
+    source = "../service_bus_subscription"
 
-resource "azurerm_servicebus_subscription_rule" "subscription_rule_tg" {
-  name                = "${var.environment}-${var.prefix}-rule_tg"
-  resource_group_name   = var.resource_group
-  namespace_name        = azurerm_servicebus_namespace.servicebus.name
-  topic_name            = azurerm_servicebus_topic.topic.name
+    name = "added"
+    resource_group = var.resource_group
+    servicebus = azurerm_servicebus_namespace.servicebus.name
+    topic = azurerm_servicebus_topic.topic.name
 
-  subscription_name   = azurerm_servicebus_subscription.telegram.name
-  filter_type         = "CorrelationFilter"
-
-  correlation_filter {
-    to = "telegram"
-  }
+    to_filter = "added"
 }
+module "activated_filter" {
+    source = "../service_bus_subscription"
 
-resource "azurerm_servicebus_subscription" "mail" {
-  name                  = "mail"
-  resource_group_name   = var.resource_group
-  namespace_name        = azurerm_servicebus_namespace.servicebus.name
-  topic_name            = azurerm_servicebus_topic.topic.name
-  max_delivery_count    = 5
+    name = "activated"
+    resource_group = var.resource_group
+    servicebus = azurerm_servicebus_namespace.servicebus.name
+    topic = azurerm_servicebus_topic.topic.name
+
+    to_filter = "activated"
 }
+module "deactivated_filter" {
+    source = "../service_bus_subscription"
 
+    name = "deactivated"
+    resource_group = var.resource_group
+    servicebus = azurerm_servicebus_namespace.servicebus.name
+    topic = azurerm_servicebus_topic.topic.name
 
-resource "azurerm_servicebus_subscription_rule" "subscription_rule_mail" {
-  name                = "${var.environment}-${var.prefix}-rule_mail"
-  resource_group_name   = var.resource_group
-  namespace_name        = azurerm_servicebus_namespace.servicebus.name
-  topic_name            = azurerm_servicebus_topic.topic.name
-
-  subscription_name   = azurerm_servicebus_subscription.telegram.name
-  filter_type         = "CorrelationFilter"
-
-  correlation_filter {
-    to = "mail"
-  }
+    to_filter = "deactivated"
 }

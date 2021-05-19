@@ -6,31 +6,27 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Saiive.Notification.Abstractions.Model;
-using Saiive.Notification.Telegram;
+using Saiive.Notifications.Messenger.Core;
 
-namespace Saiive.Notification.Messenger
+namespace Saiive.Notification.Messenger.Functions
 {
-    public class TelegramMessengerFunction
+    public class NotificationFunction
     {
-        private readonly ITelegramHandler _telegramHandler;
+        private readonly IMessageHandlerFactory _handlerFactory;
 
-        public TelegramMessengerFunction(ITelegramHandler telegramHandler)
+        public NotificationFunction(IMessageHandlerFactory handlerFactory)
         {
-            _telegramHandler = telegramHandler;
+            _handlerFactory = handlerFactory;
         }
-        [FunctionName("TelegramMessageHandler")]
-        public async Task Run([ServiceBusTrigger("message", "telegram", Connection = "MessageTopic")] Message mySbMsg, ILogger log)
+        [FunctionName("NotificationHandler")]
+        public async Task Run([ServiceBusTrigger("message", "notification", Connection = "MessageTopic")] Message mySbMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
 
             try
             {
-                if (mySbMsg.To != "telegram")
-                {
-                    return;
-                }
                 var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
-                await _telegramHandler.Send(message);
+                await _handlerFactory.SendNotification(message);
             }
             catch(Exception e)
             {

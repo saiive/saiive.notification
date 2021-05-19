@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Saiive.Notification.Abstractions\Saiive.Notification.Abstractions.csproj" />
+    <ProjectReference Include="..\Saiive.Notification.Mail\Saiive.Notification.Mail.csproj" />
+    <ProjectReference Include="..\Saiive.Notification.Telegram\Saiive.Notification.Telegram.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -14,9 +14,9 @@ namespace Saiive.Notification.Function.Functions
 {
     public class TimerFunction
     {
-        private readonly IChecker _check;
+        private readonly ICheckerFactory _check;
 
-        public TimerFunction(IChecker check)
+        public TimerFunction(ICheckerFactory check)
         {
             _check = check;
         }
@@ -72,8 +72,8 @@ namespace Saiive.Notification.Function.Functions
                 {
                     CorrelationId = notification.PubKey,
                     Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification)),
-                    To = notification.Type,
-                    
+                    To = "notification"
+
                 };
                 await notificationBus.AddAsync(message);
             }

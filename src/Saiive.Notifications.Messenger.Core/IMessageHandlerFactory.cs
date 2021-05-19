@@ -1,17 +1,15 @@
 ﻿using System.Threading.Tasks;
+using Saiive.Notification.Abstractions;
 using Saiive.Notification.Abstractions.Model;
 
-namespace Saiive.Notification.Abstractions
+namespace Saiive.Notifications.Messenger.Core
 {
-    public interface IMessageHandler
+    public interface IMessageHandlerFactory
     {
-        Task Send(NotifyMessage message);
-
+        Task SendNotification(NotifyMessage message);
 
         Task<NotifyMessage> Added(SubscriptionsEntity subscription, AddedInformation information);
         Task<NotifyMessage> Activated(SubscriptionsEntity subscription, ActivateInformation information);
         Task<NotifyMessage> Deactivated(SubscriptionsEntity subscription, DeactivateInformation information);
-
-        string Type { get; }
     }
 }

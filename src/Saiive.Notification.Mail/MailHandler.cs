@@ -1,43 +1,34 @@
-using System;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Saiive.Notification.Abstractions;
 using Saiive.Notification.Abstractions.Model;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Saiive.Notification.Messenger
+namespace Saiive.Notification.Mail
 {
-    public class EmailMessengerFunction 
+    public class MailHandler : MessageHandler
     {
         private readonly ISendGridClient _mailHandler;
+        private readonly ILogger<MailHandler> _log;
 
-        public EmailMessengerFunction(ISendGridClient mailHandler)
+        public MailHandler(ISendGridClient mailHandler, ILogger<MailHandler> log)
         {
             _mailHandler = mailHandler;
+            _log = log;
         }
-        [FunctionName("EmailMessageHandler")]
-        public async Task Run([ServiceBusTrigger("message", "mail", Connection = "MessageTopic")] Message mySbMsg, ILogger log)
-        {
-            log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
+        public override string Type => "mail";
 
+        public override async Task Send(NotifyMessage message)
+        {
             try
             {
-                if (mySbMsg.To != "mail")
-                {
-                    return;
-                }
-                var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
-
-
                 var msg = MailHelper.CreateSingleEmail(
                     new EmailAddress(Environment.GetEnvironmentVariable("SenderMail"), "Saiive Alert Bot"),
                     new EmailAddress(message.ConnectionStringParts["to"]), $"Saiive Alert Bot ({message.PubKey})",
                     "", message.Message);
-                
+
                 var response = await _mailHandler.SendEmailAsync(msg);
                 var body = await response.Body.ReadAsStringAsync();
 
@@ -47,11 +38,14 @@ namespace Saiive.Notification.Messenger
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                log.LogError(e, $"Error sending telegram message...");
+                _log.LogError(e, $"Error sending telegram message...");
                 //ignore now
             }
         }
+
+        
+
     }
 }

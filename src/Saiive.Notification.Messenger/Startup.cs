@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Saiive.Notification.Messenger;
-using Saiive.Notification.Telegram;
-using SendGrid.Extensions.DependencyInjection;
+using Saiive.Notifications.Messenger.Core;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Saiive.Notification.Messenger
@@ -11,12 +9,7 @@ namespace Saiive.Notification.Messenger
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddTelegramBot();
-
-            builder.Services.AddSendGrid(options =>
-            {
-                options.ApiKey = Environment.GetEnvironmentVariable("SendGridApiKey");
-            });
+            builder.Services.AddMessengerCore();
         }
     }
 }

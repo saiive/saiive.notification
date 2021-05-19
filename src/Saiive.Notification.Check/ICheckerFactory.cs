@@ -4,10 +4,10 @@ using Saiive.Notification.Abstractions.Model;
 
 namespace Saiive.Notification.Check
 {
-    public interface IChecker
+    public interface ICheckerFactory
     {
         Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions);
 
-        AlertType Type { get; }
+        Task<int> GetCurrentBlockHeight(SubscriptionsEntity subscription);
     }
 }

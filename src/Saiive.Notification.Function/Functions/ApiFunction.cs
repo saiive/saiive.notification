@@ -26,9 +26,9 @@ namespace Saiive.Notification.Function.Functions
     public class ApiFunction
     {
         private const string FunctionNameAddress = "api/";
-        private readonly IChecker _check;
+        private readonly ICheckerFactory _check;
 
-        public ApiFunction(IChecker check)
+        public ApiFunction(ICheckerFactory check)
         {
             _check = check;
         }
@@ -51,68 +51,25 @@ namespace Saiive.Notification.Function.Functions
             var subscription = JsonConvert.DeserializeObject<SubscriptionsEntity>(body);
             var curBlockHeight = await _check.GetCurrentBlockHeight(subscription);
 
-
             subscription.RowKey = Guid.NewGuid().ToString();
             subscription.Interval = Interval.Min_10;
             subscription.LastBlockHeight = curBlockHeight;
             subscription.AlertType = subscription.AlertType;
             subscription.PartitionKey = "free";
-
-            var connectionString = subscription.NotificationConnectionString.Split(';')
-                .Select(t => t.Split(new char[] { '=' }, 2))
-                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
-
-            var type = connectionString["type"];
-
-
-            if (type == "mail")
+            subscription.IsEnabled = false;
+            
+            var context = (DefaultHttpContext)req.Properties["HttpContext"];
+            var host = context.Request.Host;
+            var protocol = context.Request.IsHttps ? "https" : "http";
+            var addedMessage = new Message
             {
-                subscription.IsEnabled = false;
+                To = "added",
+                Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(subscription)),
+                ReplyTo = $"{protocol}://{host}"
 
-                var context = (DefaultHttpContext)req.Properties["HttpContext"];
-                var host = context.Request.Host;
-                var protocol = context.Request.IsHttps ? "https" : "http";
-                var confirmEmail = $"{protocol}://{host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
+            };
 
-                var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
-                    subscription.PartitionKey)
-                {
-                    Message = confirmEmail,
-                    PubKey = subscription.PublicKey
-                };
-
-                var message = new Message
-                {
-                    To = type,
-                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification))
-
-                };
-                await notificationBus.AddAsync(message);
-
-            }
-            else if (type == "telegram")
-            {
-                var startMessage = $"Hello. Your friendly Masternode alert-service has started! 🎉";
-
-                var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
-                    subscription.PartitionKey)
-                {
-                    Message = startMessage,
-                    PubKey = subscription.PublicKey
-                };
-
-                var message = new Message
-                {
-                    To = type,
-                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification))
-
-                };
-                await notificationBus.AddAsync(message);
-            }
-            else
-            {
-                subscription.IsEnabled = true;
-            }
+            await notificationBus.AddAsync(addedMessage);
 
             var operation = TableOperation.Insert(subscription);
             await cloudTable.ExecuteAsync(operation);
@@ -153,7 +110,6 @@ namespace Saiive.Notification.Function.Functions
 
             [Table("%SubscriptionsTable%", Connection = "Subscriptions")] CloudTable cloudTable,
             [ServiceBus("message", Connection = "MessageTopic")] IAsyncCollector<Message> notificationBus,
-            string partitionKey, string rowKey,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -167,27 +123,20 @@ namespace Saiive.Notification.Function.Functions
             var operation = TableOperation.Replace(subscription);
             await cloudTable.ExecuteAsync(operation);
 
+
             var context = (DefaultHttpContext)req.Properties["HttpContext"];
             var host = context.Request.Host;
             var protocol = context.Request.IsHttps ? "https" : "http";
 
-            var deactivateLink = $"{protocol}://{host}/api/deactivate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmEmail = $"Your subscription has been activated. To disable it use this link: {deactivateLink}";
-
-            var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
-                subscription.PartitionKey)
+            var activateMessage = new Message
             {
-                Message = confirmEmail,
-                PubKey = subscription.PublicKey
+                To = "activated",
+                Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(subscription)),
+                ReplyTo = $"{protocol}://{host}"
+
             };
 
-            var message = new Message
-            {
-                To = "mail",
-                Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification))
-
-            };
-            await notificationBus.AddAsync(message);
+            await notificationBus.AddAsync(activateMessage);
 
             return new OkObjectResult("Subscription is now live!");
         }
@@ -213,31 +162,23 @@ namespace Saiive.Notification.Function.Functions
                 return new BadRequestObjectResult("subscription not found");
             }
 
-            subscription.IsEnabled = true;
+            subscription.IsEnabled = false;
             var operation = TableOperation.Replace(subscription);
             await cloudTable.ExecuteAsync(operation);
 
             var context = (DefaultHttpContext)req.Properties["HttpContext"];
             var host = context.Request.Host;
             var protocol = context.Request.IsHttps ? "https" : "http";
-            var activateLink = $"{protocol}://{host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmEmail = $"Your subscription has been deactivated. To activate it use this link: {activateLink}";
-
-            var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
-                subscription.PartitionKey)
+          
+            var deactivateMessage = new Message
             {
-                Message = confirmEmail,
-                PubKey = subscription.PublicKey
+                To = "deactivated",
+                Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(subscription)),
+                ReplyTo = $"{protocol}://{host}"
+
             };
 
-            var message = new Message
-            {
-                To = "mail",
-                Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification))
-
-            };
-            await notificationBus.AddAsync(message);
-
+            await notificationBus.AddAsync(deactivateMessage);
             return new OkObjectResult("Subscription is now live!");
         }
 

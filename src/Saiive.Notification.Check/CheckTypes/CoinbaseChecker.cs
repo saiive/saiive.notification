@@ -82,5 +82,7 @@ namespace Saiive.Notification.Check.CheckTypes
 
             return ret;
         }
+
+        public override AlertType Type => AlertType.Coinbase;
     }
 }

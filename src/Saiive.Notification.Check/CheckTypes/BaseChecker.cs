@@ -32,6 +32,8 @@ namespace Saiive.Notification.Check.CheckTypes
         }
 
         public abstract Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions);
+        public abstract AlertType Type { get; }
+
         public Task<int> GetCurrentBlockHeight(SubscriptionsEntity subscription)
         {
             var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Saiive.Notification.Abstractions;
 
 namespace Saiive.Notification.Telegram
 {
@@ -6,7 +7,8 @@ namespace Saiive.Notification.Telegram
     {
         public static IServiceCollection AddTelegramBot(this IServiceCollection services)
         {
-            services.AddSingleton<ITelegramHandler, TelegramBot>();
+            services.AddSingleton<TelegramBot>();
+            services.AddSingleton<MessageHandler>(a => a.GetService<TelegramBot>());
 
             return services;
         }
