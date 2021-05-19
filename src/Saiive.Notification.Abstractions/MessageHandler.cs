@@ -8,15 +8,15 @@ namespace Saiive.Notification.Abstractions
         public abstract string Type { get; }
         public abstract Task Send(NotifyMessage message);
 
-        public Task<NotifyMessage> Added(SubscriptionsEntity subscription, AddedInformation information)
+        public virtual Task<NotifyMessage> Added(SubscriptionsEntity subscription, AddedInformation information)
         {
             subscription.IsEnabled = false;
-            var confirmEmail = $"{information.Host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
+            var confirmMessage = $"{information.Host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
 
             var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
                 subscription.PartitionKey)
             {
-                Message = confirmEmail,
+                Message = confirmMessage,
                 PubKey = subscription.PublicKey
             };
 
@@ -24,15 +24,15 @@ namespace Saiive.Notification.Abstractions
         }
 
 
-        public Task<NotifyMessage> Activated(SubscriptionsEntity subscription, ActivateInformation information)
+        public virtual Task<NotifyMessage> Activated(SubscriptionsEntity subscription, ActivateInformation information)
         {
             var deactivateLink = $"{information.Host}/api/deactivate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmEmail = $"Your subscription has been activated. To disable it use this link: {deactivateLink}";
+            var confirmMessage = $"Your subscription has been activated. To disable it use this link: {deactivateLink}";
 
             var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
                 subscription.PartitionKey)
             {
-                Message = confirmEmail,
+                Message = confirmMessage,
                 PubKey = subscription.PublicKey
             };
 
@@ -40,15 +40,15 @@ namespace Saiive.Notification.Abstractions
             return Task.FromResult(notification);
         }
 
-        public Task<NotifyMessage> Deactivated(SubscriptionsEntity subscription, DeactivateInformation information)
+        public virtual Task<NotifyMessage> Deactivated(SubscriptionsEntity subscription, DeactivateInformation information)
         {
             var activateLink = $"{information.Host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmEmail = $"Your subscription has been deactivated. To activate it use this link: {activateLink}";
+            var confirmMessage = $"Your subscription has been deactivated. To activate it use this link: {activateLink}";
 
             var notification = new NotifyMessage(subscription.NotificationConnectionString, subscription.RowKey,
                 subscription.PartitionKey)
             {
-                Message = confirmEmail,
+                Message = confirmMessage,
                 PubKey = subscription.PublicKey
             };
 

@@ -13,9 +13,11 @@ namespace Saiive.Notification.Check
 
             services.AddSingleton<CoinbaseChecker>();
             services.AddSingleton<UtxoChecker>();
+            services.AddSingleton<WhaleChecker>();
 
             services.AddSingleton<IChecker>(a => a.GetService<CoinbaseChecker>());
             services.AddSingleton<IChecker>(a => a.GetService<UtxoChecker>());
+            services.AddSingleton<IChecker>(a => a.GetService<WhaleChecker>());
 
             var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
             services.Configure<AlertConfig>(

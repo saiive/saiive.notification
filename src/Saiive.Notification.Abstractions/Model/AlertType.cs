@@ -12,6 +12,10 @@ namespace Saiive.Notification.Abstractions.Model
         [EnumMember(Value = "coinbase")]
         Coinbase,
         [EnumMember(Value = "utxo")]
-        Utxo
+        Utxo,
+        [EnumMember(Value = "whale")]
+        Whale,
+        [EnumMember(Value = "price")]
+        Price
     }
 }

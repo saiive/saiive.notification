@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Saiive.Notification.Abstractions\Saiive.Notification.Abstractions.csproj" />
     <ProjectReference Include="..\Saiive.Notification.Mail\Saiive.Notification.Mail.csproj" />
     <ProjectReference Include="..\Saiive.Notification.Telegram\Saiive.Notification.Telegram.csproj" />
+    <ProjectReference Include="..\Saiive.Notification.Twitter\Saiive.Notification.Twitter.csproj" />
   </ItemGroup>
 
 </Project>

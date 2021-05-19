@@ -24,6 +24,10 @@ namespace Saiive.Notification.Mail
         {
             try
             {
+                if (!message.ConnectionString.Contains("to"))
+                {
+                    throw new ArgumentException("'to' must be set as parameter!");
+                }
                 var msg = MailHelper.CreateSingleEmail(
                     new EmailAddress(Environment.GetEnvironmentVariable("SenderMail"), "Saiive Alert Bot"),
                     new EmailAddress(message.ConnectionStringParts["to"]), $"Saiive Alert Bot ({message.PubKey})",

@@ -11,7 +11,7 @@ namespace Saiive.Notification.Abstractions.Model
             ConnectionString = connectionString;
             RowKey = rowKey;
             PartitionKey = partitionKey;
-            ConnectionStringParts = connectionString.Split(';')
+            ConnectionStringParts = connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(t => t.Split(new char[] { '=' }, 2))
                 .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
 

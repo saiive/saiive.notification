@@ -26,7 +26,7 @@ namespace Saiive.SuperNode.Client.Api
         /// <param name="network"></param>
         /// <param name="height"></param>
         /// <returns>List&lt;TransactionModel&gt;</returns>
-        List<TransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height);
+        List<BlockTransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height);
         /// <summary>
         ///  
         /// </summary>
@@ -148,7 +148,7 @@ path = path.Replace("{" + "block" + "}", ApiClient.ParameterToString(block));
         /// <param name="network"></param>
         /// <param name="height"></param>
         /// <returns>List&lt;TransactionModel&gt;</returns>
-        public List<TransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height)
+        public List<BlockTransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height)
         {
             // verify the required parameter 'coin' is set
             if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxHeightHeightGet");
@@ -157,10 +157,10 @@ path = path.Replace("{" + "block" + "}", ApiClient.ParameterToString(block));
             // verify the required parameter 'height' is set
             if (height == null) throw new ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinTxHeightHeightGet");
     
-            var path = "/api/v1/{network}/{coin}/tx/height/{height}";
+            var path = "/api/v1/{network}/{coin}/tx/height/{height}/true";
             path = path.Replace("{format}", "json");
-            path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
-path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network));
+            path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin.ToUpper()));
+path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network.ToLower()));
 path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
     
             var queryParams = new Dictionary<String, String>();
@@ -181,7 +181,7 @@ path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightGet: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (List<TransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<TransactionModel>), response.Headers);
+            return (List<BlockTransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<BlockTransactionModel>), response.Headers);
         }
     
         /// <summary>
