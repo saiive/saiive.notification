@@ -6,26 +6,19 @@ namespace Saiive.Notification.Abstractions.Model
 {
     public class NotifyMessage
     {
-        public NotifyMessage(string connectionString, string rowKey, string partitionKey)
-        {
-            ConnectionString = connectionString;
-            RowKey = rowKey;
-            PartitionKey = partitionKey;
-            ConnectionStringParts = connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                .Select(t => t.Split(new char[] { '=' }, 2))
-                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
 
-            Type = ConnectionStringParts["type"];
+        private NotifyMessage()
+        {
+
         }
 
-        public Dictionary<string, string> ConnectionStringParts { get; }
+        public NotifyMessage(SubscriptionsEntity subscription)
+        {
+            Subscription = subscription;
+        }
 
-        public string Type { get; }
-        public string ConnectionString { get;  }
-        public string PubKey { get; set; }
+        public SubscriptionsEntity Subscription { get; }
+        public string Title { get; set; }
         public string Message { get; set; }
-
-        public string RowKey { get;  }
-        public string PartitionKey { get; }
     }
 }

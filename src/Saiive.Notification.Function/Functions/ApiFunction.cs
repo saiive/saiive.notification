@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -15,10 +14,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Saiive.Notification.Abstractions.Model;
 using Saiive.Notification.Check;
+using Saiive.Notifications.Messenger.Core;
 
 namespace Saiive.Notification.Function.Functions
 {
-
     public class IdRequest : TableEntity
     {
     }
@@ -27,10 +26,12 @@ namespace Saiive.Notification.Function.Functions
     {
         private const string FunctionNameAddress = "api/";
         private readonly ICheckerFactory _check;
+        private readonly IMessageHandlerFactory _messageFactory;
 
-        public ApiFunction(ICheckerFactory check)
+        public ApiFunction(ICheckerFactory check, IMessageHandlerFactory messageFactory)
         {
             _check = check;
+            _messageFactory = messageFactory;
         }
 
         [FunctionName("AddSubscription")]
@@ -53,11 +54,21 @@ namespace Saiive.Notification.Function.Functions
 
             subscription.RowKey = Guid.NewGuid().ToString();
             subscription.Interval = Interval.Min_10;
-            subscription.LastBlockHeight = curBlockHeight;
+            subscription.LastStateInteger = curBlockHeight;
             subscription.AlertType = subscription.AlertType;
             subscription.PartitionKey = "free";
             subscription.IsEnabled = false;
-            
+
+            try
+            {
+                await _check.IsValid(subscription);
+                await _messageFactory.IsValid(subscription);
+            }
+            catch (ArgumentException ae)
+            {
+                return new BadRequestObjectResult(ae);
+            }
+
             var context = (DefaultHttpContext)req.Properties["HttpContext"];
             var host = context.Request.Host;
             var protocol = context.Request.IsHttps ? "https" : "http";
@@ -118,6 +129,10 @@ namespace Saiive.Notification.Function.Functions
             {
                 return new BadRequestObjectResult("subscription not found");
             }
+            if (subscription.IsEnabled)
+            {
+                return new OkObjectResult("Subscription is enabled already!");
+            }
 
             subscription.IsEnabled = true;
             var operation = TableOperation.Replace(subscription);
@@ -133,7 +148,6 @@ namespace Saiive.Notification.Function.Functions
                 To = "activated",
                 Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(subscription)),
                 ReplyTo = $"{protocol}://{host}"
-
             };
 
             await notificationBus.AddAsync(activateMessage);
@@ -162,6 +176,11 @@ namespace Saiive.Notification.Function.Functions
                 return new BadRequestObjectResult("subscription not found");
             }
 
+            if (!subscription.IsEnabled)
+            {
+                return new OkObjectResult("Subscription is disabled already!");
+            }
+
             subscription.IsEnabled = false;
             var operation = TableOperation.Replace(subscription);
             await cloudTable.ExecuteAsync(operation);
@@ -175,12 +194,10 @@ namespace Saiive.Notification.Function.Functions
                 To = "deactivated",
                 Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(subscription)),
                 ReplyTo = $"{protocol}://{host}"
-
             };
 
             await notificationBus.AddAsync(deactivateMessage);
             return new OkObjectResult("Subscription is now live!");
         }
-
     }
 }

@@ -30,6 +30,16 @@ namespace Saiive.Notification.Check
             _blockApi = new BlockApi(client);
         }
 
+        public Task<bool> IsValid(SubscriptionsEntity subscription)
+        {
+            if (_checker.ContainsKey(subscription.AlertType))
+            {
+                return _checker[subscription.AlertType].IsValid(subscription);
+            }
+
+            return Task.FromResult(false);
+        }
+
         public async Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions)
         {
             var ret = new List<NotifyMessage>();

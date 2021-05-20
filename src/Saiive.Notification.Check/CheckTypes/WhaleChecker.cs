@@ -14,110 +14,82 @@ namespace Saiive.Notification.Check.CheckTypes
         private readonly string _defaultTemplate =
             "🎉🎉 {0} Minted new coinbase\nRewards received {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
 
+        private const string ThresholdProperty = "threshold";
 
         public WhaleChecker(IOptions<AlertConfig> config,ILogger<CoinbaseChecker> logger) : base(config, logger)
         {
         }
 
-       
-        public override async Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions)
+
+        protected override Task<bool> CheckIsValid(SubscriptionsEntity subscription, Dictionary<string, string> alertSettings)
+        {
+            if (!alertSettings.ContainsKey(ThresholdProperty))
+            {
+                throw new ArgumentException($"{ThresholdProperty} is missing", ThresholdProperty);
+            }
+            return Task.FromResult(true);
+        }
+
+        protected override async Task<List<NotifyMessage>> OnCheckAlert(SubscriptionsEntity subscription, Dictionary<string, string> alertSettings)
         {
             var ret = new List<NotifyMessage>();
+            await Task.CompletedTask;
 
-            try
+
+            var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
+            subscription.Network.ToString());
+            Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
+
+            var lastBlockHeight = subscription.LastStateInteger + 1;
+            for (int i = lastBlockHeight; i <= blockTip.Height.Value; i++)
             {
-                var tasks = new List<Task>();
+                var txs = TxApi.ApiV1NetworkCoinTxHeightHeightGet(subscription.Coin.ToString(),
+                    subscription.Network.ToString(),
+                    i);
 
-                foreach (var subscription in subscriptions)
+
+                foreach (var tx in txs.Where(a => !a.Coinbase))
                 {
-                    var task = new Task(() =>
+                    var explorerUrl =
+                        $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.Txid})";
+
+                    if (tx.Details != null)
                     {
-                        try
+                        foreach (var output in tx.Details.Outputs)
                         {
-                            var conString = subscription.AlertTypeSettings.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                                .Select(t => t.Split(new char[] { '=' }, 2))
-                                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
-
-                            
-
-                                var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
-                                subscription.Network.ToString());
-                            Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
-
-                            var lastBlockHeight = subscription.LastBlockHeight + 1;
-                            for (int i = lastBlockHeight; i <= blockTip.Height.Value; i++)
+                            if ((output.Value / 100000000) >= Convert.ToDouble(alertSettings[ThresholdProperty]))
                             {
-                                var txs = TxApi.ApiV1NetworkCoinTxHeightHeightGet(subscription.Coin.ToString(),
-                                    subscription.Network.ToString(),
-                                    i);
-
-
-                                foreach (var tx in txs.Where(a => !a.Coinbase))
+                                var message = new NotifyMessage(subscription)
                                 {
-                                    var explorerUrl =
-                                        $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.Txid})";
-
-                                    if (tx.Details != null)
-                                    {
-                                        foreach (var output in tx.Details.Outputs)
-                                        {
-                                            if ((output.Value / 100000000) >= Convert.ToDouble(conString["threshold"]))
-                                            {
-                                                var message = new NotifyMessage(
-                                                    subscription.NotificationConnectionString,
-                                                    subscription.RowKey, subscription.PartitionKey)
-                                                {
-                                                    PubKey = null,
-                                                    Message =
-                                                        $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}"
-                                                };
-                                                ret.Add(message);
-                                            }
-                                        }
-
-                                        foreach (var input in tx.Details.Inputs)
-                                        {
-                                            if ((input.Value / 100000000) >= Convert.ToDouble(conString["threshold"]))
-                                            {
-                                                var message = new NotifyMessage(
-                                                    subscription.NotificationConnectionString,
-                                                    subscription.RowKey, subscription.PartitionKey)
-                                                {
-                                                    PubKey = null,
-                                                    Message =
-                                                        $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}"
-                                                };
-                                                ret.Add(message);
-                                            }
-                                        }
-                                    }
-
-                                }
+                                    Message =
+                                        $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}"
+                                };
+                                ret.Add(message);
                             }
-
-                            subscription.LastBlockHeight = blockTip.Height.Value;
                         }
-                        catch (Exception e)
+
+                        foreach (var input in tx.Details.Inputs)
                         {
-                            Logger.LogError("Error fetching address data...", e);
+                            if ((input.Value / 100000000) >= Convert.ToDouble(alertSettings[ThresholdProperty]))
+                            {
+                                var message = new NotifyMessage(subscription)
+                                {
+                                    Message =
+                                        $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}"
+                                };
+                                ret.Add(message);
+                            }
                         }
-                    });
+                    }
 
-                    tasks.Add(task);
-                    task.Start();
                 }
-
-                await Task.WhenAll(tasks);
-
             }
-            catch (Exception e)
-            {
-                Logger.LogError("Unknown error,...", e);
-            }
+
+            subscription.LastStateInteger = blockTip.Height.Value;
 
             return ret;
         }
-
+        
         public override AlertType Type => AlertType.Whale;
     }
 }

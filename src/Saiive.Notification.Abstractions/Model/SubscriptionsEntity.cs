@@ -23,7 +23,7 @@ namespace Saiive.Notification.Abstractions.Model
         [EnumMember(Value = "DFI")]
         DFI,
         [EnumMember(Value = "BTC")]
-        Bitcoin
+        BTC
     }
 
     public class SubscriptionsEntity : TableEntity
@@ -33,34 +33,44 @@ namespace Saiive.Notification.Abstractions.Model
             Network = Network.Mainnet;
         }
 
-        [JsonProperty("type")]
+        [JsonProperty("alertType")]
         public AlertType AlertType { get; set; }
 
         [JsonProperty("interval")]
         [JsonIgnore]
         public Interval Interval { get; set; }
 
-        [JsonIgnore]
-        public string IntervalString
-        {
-            get
-            {
-                return Interval.ToString();
-            }
-            set
-            {
-                if (Enum.TryParse(typeof(Interval), value, out object enuValue))
-                {
-                    Interval = (Interval)enuValue;
-                }
-            }
-        }
-
         [JsonProperty("network")]
         public Network Network { get; set; }
 
         [JsonProperty("coin")]
         public Coin Coin { get; set; }
+
+        [JsonProperty("notificationType")]
+        public NotificationType NotificationType { get; set; }
+
+        [JsonIgnore]
+        public int LastStateInteger { get; set; }
+
+        [JsonIgnore]
+        public double LastStateDouble { get; set; }
+
+        [JsonIgnore]
+        public string LastStateString { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("notificationSettings")]
+        public string NotificationSettings { get; set; }
+
+        [JsonProperty("alertTypeSettings")]
+        public string AlertTypeSettings { get; set; }
+
+        [JsonProperty("isEnabled")]
+        [JsonIgnore]
+        public bool IsEnabled { get; set; }
+
 
         [JsonIgnore]
         public string AlertTypeString
@@ -107,26 +117,38 @@ namespace Saiive.Notification.Abstractions.Model
                 }
             }
         }
-
-        [JsonProperty("lastBlockHeight")]
         [JsonIgnore]
-        public int LastBlockHeight { get; set; }
+        public string IntervalString
+        {
+            get
+            {
+                return Interval.ToString();
+            }
+            set
+            {
+                if (Enum.TryParse(typeof(Interval), value, out object enuValue))
+                {
+                    Interval = (Interval)enuValue;
+                }
+            }
+        }
 
-        [JsonProperty("publicKey")]
-        public string PublicKey { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("notificationConnectionString")]
-        public string NotificationConnectionString { get; set; }
-
-        [JsonProperty("alertTypeSettings")]
-        public string AlertTypeSettings { get; set; }
-
-        [JsonProperty("isEnabled")]
         [JsonIgnore]
-        public bool IsEnabled { get; set; }
-        
+        public string NotificationTypeString
+        {
+            get
+            {
+                return NotificationType.ToString();
+            }
+            set
+            {
+                if (Enum.TryParse(typeof(NotificationType), value, out object enuValue))
+                {
+                    NotificationType = (NotificationType)enuValue;
+                }
+            }
+        }
+
+
     }
 }

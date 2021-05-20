@@ -6,10 +6,11 @@ namespace Saiive.Notifications.Messenger.Core
 {
     public interface IMessageHandlerFactory
     {
-        Task SendNotification(NotifyMessage message);
+        Task SendNotification(SubscriptionsEntity subscription, NotifyMessage message);
 
         Task<NotifyMessage> Added(SubscriptionsEntity subscription, AddedInformation information);
         Task<NotifyMessage> Activated(SubscriptionsEntity subscription, ActivateInformation information);
         Task<NotifyMessage> Deactivated(SubscriptionsEntity subscription, DeactivateInformation information);
+        Task<bool> IsValid(SubscriptionsEntity subscription);
     }
 }

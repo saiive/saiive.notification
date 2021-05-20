@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Saiive.Notification.Check\Saiive.Notification.Check.csproj" />
     <ProjectReference Include="..\Saiive.Notification.Telegram\Saiive.Notification.Telegram.csproj" />
+    <ProjectReference Include="..\Saiive.Notifications.Messenger.Core\Saiive.Notifications.Messenger.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

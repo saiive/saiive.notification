@@ -5,6 +5,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Saiive.Notification.Check;
 using Saiive.Notification.Function;
+using Saiive.Notifications.Messenger.Core;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Saiive.Notification.Function
@@ -14,6 +15,7 @@ namespace Saiive.Notification.Function
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddAlertCheckerFunction();
+            builder.Services.AddMessengerCore();
 
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

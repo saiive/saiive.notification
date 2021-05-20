@@ -7,11 +7,13 @@ namespace Saiive.Notification.Abstractions.Model
     [JsonConverter(typeof(StringEnumConverter))]
     public enum NotificationType
     {
-        [EnumMember(Value = "Telegram")]
+        [EnumMember(Value = "telegram")]
         Telegram,
-        [EnumMember(Value = "Sms")]
+        [EnumMember(Value = "sms")]
         Sms,
-        [EnumMember(Value = "Email")]
-        Email
+        [EnumMember(Value = "mail")]
+        Mail,
+        [EnumMember(Value = "twitter")]
+        Twitter
     }
 }

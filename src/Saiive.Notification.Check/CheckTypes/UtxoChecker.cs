@@ -10,128 +10,112 @@ using Saiive.SuperNode.Client.Model;
 
 namespace Saiive.Notification.Check.CheckTypes
 {
-    internal class UtxoChecker : BaseChecker
+    internal class UtxoChecker : PublicKeyCheckerBase
     {
         private readonly string _defaultTemplateTo =
             "🎉🎉 {0} New transaction detected\nReceived funds\n\nAmount {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
         private readonly string _defaultTemplateFrom =
             "🎉🎉 {0} New transaction detected\nFunds sent\n\nAmount {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
 
+        private const string DirectionProperty = "direction";
+
         public UtxoChecker(IOptions<AlertConfig> config, ILogger<BaseChecker> logger) : base(config, logger)
         {
         }
 
-        public override async Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions)
+        public override Task<bool> CheckIsValidInternal(SubscriptionsEntity subscriptions, Dictionary<string, string> alertSettings)
+        {
+            if (!alertSettings.ContainsKey(DirectionProperty))
+            {
+                throw new ArgumentException($"{DirectionProperty} is missing [from, to]", DirectionProperty);
+            }
+
+            return Task.FromResult(true);
+
+        }
+
+        protected override async Task<List<NotifyMessage>> OnCheckAlert(SubscriptionsEntity subscription, Dictionary<string, string> alertSettings)
         {
             var ret = new List<NotifyMessage>();
+            await Task.CompletedTask;
 
             try
             {
-                var tasks = new List<Task>();
+                var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
+                    subscription.Network.ToString());
+                Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
 
-                foreach (var subscription in subscriptions)
+                var txs = AddressApi.ApiV1NetworkCoinTxsAddressGet(subscription.Coin.ToString(),
+                    subscription.Network.ToString(),
+                    alertSettings[PublicKeyProperty]);
+
+                Logger.LogInformation(
+                    $"Check for {subscription.Name} with pubKey {alertSettings[PublicKeyProperty]}");
+
+
+                var template = "";
+                var foundTxs = new List<TransactionModel>();
+                var newTx = txs.Where(a => a.MintHeight.HasValue &&
+                                           a.MintHeight > subscription.LastStateInteger).ToList();
+
+                if (alertSettings[DirectionProperty] == "to")
                 {
-                    var task = new Task(() =>
+                    template = _defaultTemplateTo;
+                    foreach (var tx in newTx)
                     {
-                        try
+                        var specificTx = TxApi.ApiV1NetworkCoinTxIdTxIdGet(subscription.Coin.ToString(),
+                            subscription.Network.ToString(), tx.MintTxId);
+
+                        if (specificTx.Details.Outputs.Any(a => a.Address == alertSettings[PublicKeyProperty]))
                         {
-                            var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
-                                subscription.Network.ToString());
-                            Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
-
-                            var txs = AddressApi.ApiV1NetworkCoinTxsAddressGet(subscription.Coin.ToString(),
-                                subscription.Network.ToString(),
-                                subscription.PublicKey);
-
-                            Logger.LogInformation(
-                                $"Check for {subscription.Name} with pubKey {subscription.PublicKey}");
-
-                            var conString = subscription.AlertTypeSettings.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                                .Select(t => t.Split(new char[] { '=' }, 2))
-                                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
-
-                            var template = "";
-                            if (conString.ContainsKey("direction"))
-                            {
-                                var foundTxs = new List<TransactionModel>(); 
-                                var newTx = txs.Where(a => a.MintHeight.HasValue &&
-                                                           a.MintHeight > subscription.LastBlockHeight).ToList();
-
-                                if (conString["direction"] == "to")
-                                {
-                                    template = _defaultTemplateTo;
-                                    foreach (var tx in newTx)
-                                    {
-                                        var specificTx = TxApi.ApiV1NetworkCoinTxIdTxIdGet(subscription.Coin.ToString(),
-                                            subscription.Network.ToString(), tx.MintTxId);
-
-                                        if (specificTx.Details.Outputs.Any(a => a.Address == subscription.PublicKey))
-                                        {
-                                            if(foundTxs.All(a => a.MintTxId != tx.MintTxId))
-                                                foundTxs.Add(tx);
-                                        }
-                                    }
-                                }
-                                else if (conString["direction"] == "from")
-                                {
-                                    template = _defaultTemplateFrom;
-                                    foreach (var tx in newTx)
-                                    {
-                                        var specificTx = TxApi.ApiV1NetworkCoinTxIdTxIdGet(subscription.Coin.ToString(),
-                                            subscription.Network.ToString(), tx.MintTxId);
-
-                                        if (specificTx.Details.Inputs.Any(a => a.Address == subscription.PublicKey))
-                                        {
-                                            if (foundTxs.All(a => a.MintTxId != tx.MintTxId))
-                                                foundTxs.Add(tx);
-                                        }
-                                    }
-                                }
-                                foreach (var tx in foundTxs)
-                                {
-
-                                    var explorerUrl =
-                                        $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
-                                    var msg = String.Format(template, subscription.PublicKey,
-                                        tx.Value / 100000000, tx.MintTxId, tx.MintHeight.Value, explorerUrl);
-
-                                    ret.Add(new NotifyMessage(subscription.NotificationConnectionString,
-                                        subscription.RowKey, subscription.PartitionKey)
-                                    {
-                                        PubKey = subscription.PublicKey,
-                                        Message = msg
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                Logger.LogInformation($"Misconfigured type found, missing direction ({subscription.RowKey}-{subscription.PartitionKey})");
-                            }
-
-                            subscription.LastBlockHeight = blockTip.Height.Value;
+                            if (foundTxs.All(a => a.MintTxId != tx.MintTxId))
+                                foundTxs.Add(tx);
                         }
-                        catch (Exception e)
+                    }
+                }
+                else if (alertSettings[DirectionProperty] == "from")
+                {
+                    template = _defaultTemplateFrom;
+                    foreach (var tx in newTx)
+                    {
+                        var specificTx = TxApi.ApiV1NetworkCoinTxIdTxIdGet(subscription.Coin.ToString(),
+                            subscription.Network.ToString(), tx.MintTxId);
+
+                        if (specificTx.Details.Inputs.Any(a => a.Address == alertSettings[PublicKeyProperty]))
                         {
-                            Logger.LogError("Error fetching address data...", e);
+                            if (foundTxs.All(a => a.MintTxId != tx.MintTxId))
+                                foundTxs.Add(tx);
                         }
-                    });
-
-                    tasks.Add(task);
-                    task.Start();
+                    }
                 }
 
-                await Task.WhenAll(tasks);
+                foreach (var tx in foundTxs)
+                {
 
+                    var explorerUrl =
+                        $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
+                    var msg = String.Format(template, alertSettings[PublicKeyProperty],
+                        tx.Value / 100000000, tx.MintTxId, tx.MintHeight.Value, explorerUrl);
+
+                    ret.Add(new NotifyMessage(subscription)
+                    {
+                        Title = alertSettings[PublicKeyProperty],
+                        Message = msg
+                    });
+                }
+
+
+                subscription.LastStateInteger = blockTip.Height.Value;
             }
+
             catch (Exception e)
             {
-                Logger.LogError("Unknown error,...", e);
+                Logger.LogError("Error fetching address data...", e);
             }
 
             return ret;
         }
-
-
         public override AlertType Type => AlertType.Utxo;
+
     }
 }

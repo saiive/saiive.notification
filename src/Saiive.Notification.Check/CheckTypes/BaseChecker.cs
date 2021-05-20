@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -6,6 +8,7 @@ using Saiive.Notification.Abstractions.Model;
 using Saiive.Notification.Check.Options;
 using Saiive.SuperNode.Client.Api;
 using Saiive.SuperNode.Client.Client;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Saiive.Notification.Check.CheckTypes
 {
@@ -31,7 +34,57 @@ namespace Saiive.Notification.Check.CheckTypes
             BlockApi = new BlockApi(Client);
         }
 
-        public abstract Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions);
+        protected abstract Task<bool> CheckIsValid(SubscriptionsEntity subscription,
+            Dictionary<string, string> alertSettings);
+
+        protected abstract Task<List<NotifyMessage>> OnCheckAlert(SubscriptionsEntity subscription,
+            Dictionary<string, string> alertSettings);
+
+        public async Task<bool> IsValid(SubscriptionsEntity subscription)
+        {
+            var alertSettings = subscription.AlertTypeSettings.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Split(new char[] { '=' }, 2))
+                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
+
+            return await CheckIsValid(subscription, alertSettings);
+        }
+
+        public async Task<List<NotifyMessage>> CheckAlerts(List<SubscriptionsEntity> subscriptions)
+        {
+            var ret = new List<NotifyMessage>();
+            try
+            {
+                var tasks = new List<Task>();
+                foreach (var subscription in subscriptions)
+                {
+                    var task = new Task(async () =>
+                    {
+                        var alertSettings = subscription.AlertTypeSettings
+                            .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(t => t.Split(new char[] {'='}, 2))
+                            .ToDictionary(t => t[0].Trim(), t => t[1].Trim(),
+                                StringComparer.InvariantCultureIgnoreCase);
+
+                        var msg = await OnCheckAlert(subscription, alertSettings);
+
+                        if (msg != null)
+                        {
+                            ret.AddRange(msg);
+                        }
+                    });
+                    tasks.Add(task);
+                    task.Start();
+                }
+
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Unknown error,...", e);
+            }
+
+            return ret;
+        }
         public abstract AlertType Type { get; }
 
         public Task<int> GetCurrentBlockHeight(SubscriptionsEntity subscription)

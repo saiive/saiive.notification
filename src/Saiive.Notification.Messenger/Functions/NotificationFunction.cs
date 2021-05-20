@@ -26,7 +26,7 @@ namespace Saiive.Notification.Messenger.Functions
             try
             {
                 var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
-                await _handlerFactory.SendNotification(message);
+                await _handlerFactory.SendNotification(message.Subscription, message);
             }
             catch(Exception e)
             {

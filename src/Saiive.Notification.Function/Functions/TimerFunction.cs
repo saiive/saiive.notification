@@ -77,7 +77,7 @@ namespace Saiive.Notification.Function.Functions
             {
                 var message = new Message
                 {
-                    CorrelationId = notification.PubKey,
+                    CorrelationId = notification.Title,
                     Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification)),
                     To = "notification"
 
