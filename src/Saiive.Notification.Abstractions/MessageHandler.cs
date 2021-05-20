@@ -28,6 +28,7 @@ namespace Saiive.Notification.Abstractions
 
             var notification = new NotifyMessage(subscription)
             {
+                Title = subscription.Name,
                 Message = confirmMessage
             };
 
@@ -42,6 +43,7 @@ namespace Saiive.Notification.Abstractions
 
             var notification = new NotifyMessage(subscription)
             {
+                Title = subscription.Name,
                 Message = confirmMessage
             };
 
@@ -56,6 +58,7 @@ namespace Saiive.Notification.Abstractions
 
             var notification = new NotifyMessage(subscription)
             {
+                Title = subscription.Name,
                 Message = confirmMessage
             };
 

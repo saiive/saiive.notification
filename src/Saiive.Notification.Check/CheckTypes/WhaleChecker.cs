@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,9 @@ namespace Saiive.Notification.Check.CheckTypes
             "🎉🎉 {0} Minted new coinbase\nRewards received {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
 
         private const string ThresholdProperty = "threshold";
+        private const string ThresholdTypeProperty = "thresholdType";
+
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
 
         public WhaleChecker(IOptions<AlertConfig> config,ILogger<CoinbaseChecker> logger) : base(config, logger)
         {
@@ -27,69 +31,111 @@ namespace Saiive.Notification.Check.CheckTypes
             {
                 throw new ArgumentException($"{ThresholdProperty} is missing", ThresholdProperty);
             }
+            if (!alertSettings.ContainsKey(ThresholdTypeProperty))
+            {
+                throw new ArgumentException($"{ThresholdTypeProperty} is missing [EUR, USD, COIN]", ThresholdTypeProperty);
+            }
             return Task.FromResult(true);
         }
 
-        protected override async Task<List<NotifyMessage>> OnCheckAlert(SubscriptionsEntity subscription, Dictionary<string, string> alertSettings)
+        protected override async Task<List<NotifyMessage>> OnCheckAlert(SubscriptionsEntity subscription,
+            Dictionary<string, string> alertSettings)
         {
             var ret = new List<NotifyMessage>();
-            await Task.CompletedTask;
-
-
-            var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
-            subscription.Network.ToString());
-            Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
-
-            var lastBlockHeight = subscription.LastStateInteger + 1;
-            for (int i = lastBlockHeight; i <= blockTip.Height.Value; i++)
+            
+            if (await _semaphoreSlim.WaitAsync(TimeSpan.FromMilliseconds(1)))
             {
-                var txs = TxApi.ApiV1NetworkCoinTxHeightHeightGet(subscription.Coin.ToString(),
-                    subscription.Network.ToString(),
-                    i);
-
-
-                foreach (var tx in txs.Where(a => !a.Coinbase))
+                try
                 {
-                    var explorerUrl =
-                        $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.Txid})";
+                    var thresholdType = alertSettings[ThresholdTypeProperty];
+                    var threshold = Convert.ToDouble(alertSettings[ThresholdProperty]);
 
-                    if (tx.Details != null)
+                    var priceName = "defichain";
+
+                    if (subscription.Coin == Coin.BTC)
                     {
-                        foreach (var output in tx.Details.Outputs)
-                        {
-                            if ((output.Value / 100000000) >= Convert.ToDouble(alertSettings[ThresholdProperty]))
-                            {
-                                var message = new NotifyMessage(subscription)
-                                {
-                                    Message =
-                                        $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}"
-                                };
-                                ret.Add(message);
-                            }
-                        }
+                        priceName = "bitcoin";
+                    }
 
-                        foreach (var input in tx.Details.Inputs)
+                    if (thresholdType.ToLower() == "eur")
+                    {
+                        var price = CoingeckoApi.ApiV1NetworkCoinCoinPriceCurrencyGet(subscription.Coin.ToString(),
+                            subscription.Network.ToString(), "EUR");
+                        threshold = (threshold / price[priceName].Fiat.Value) * 100000000;
+                    }
+                    else if (thresholdType.ToLower() == "usd")
+                    {
+                        var price = CoingeckoApi.ApiV1NetworkCoinCoinPriceCurrencyGet(subscription.Coin.ToString(),
+                            subscription.Network.ToString(), "USD");
+                        threshold = (threshold / price[priceName].Fiat.Value) * 100000000;
+                    }
+                    else if (thresholdType.ToLower() == "coin")
+                    {
+                        // do nothing
+                    }
+
+
+
+                    var blockTip = BlockApi.ApiV1NetworkCoinBlockTipGet(subscription.Coin.ToString(),
+                        subscription.Network.ToString());
+                    Logger.LogInformation($"Polling information at blockheight {blockTip.Height}..");
+
+                    var lastBlockHeight = subscription.LastStateInteger + 1;
+                    for (int i = lastBlockHeight; i <= blockTip.Height.Value; i++)
+                    {
+                        var txs = TxApi.ApiV1NetworkCoinTxHeightHeightGet(subscription.Coin.ToString(),
+                            subscription.Network.ToString(),
+                            i);
+
+
+                        foreach (var tx in txs.Where(a => !a.Coinbase))
                         {
-                            if ((input.Value / 100000000) >= Convert.ToDouble(alertSettings[ThresholdProperty]))
+                            var explorerUrl =
+                                $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.Txid})";
+
+                            if (tx.Details != null)
                             {
-                                var message = new NotifyMessage(subscription)
+                                foreach (var output in tx.Details.Outputs)
                                 {
-                                    Message =
-                                        $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}"
-                                };
-                                ret.Add(message);
+                                    if (output.Value >= threshold)
+                                    {
+                                        var message = new NotifyMessage(subscription)
+                                        {
+                                            Message =
+                                                $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}"
+                                        };
+                                        ret.Add(message);
+                                    }
+                                }
+
+                                foreach (var input in tx.Details.Inputs)
+                                {
+                                    if (input.Value >= threshold)
+                                    {
+                                        var message = new NotifyMessage(subscription)
+                                        {
+                                            Message =
+                                                $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}"
+                                        };
+                                        ret.Add(message);
+                                    }
+                                }
                             }
+
                         }
                     }
 
+                    subscription.LastStateInteger = blockTip.Height.Value;
+                }
+                finally
+                {
+                    _semaphoreSlim.Release(1);
                 }
             }
 
-            subscription.LastStateInteger = blockTip.Height.Value;
-
             return ret;
         }
-        
+
         public override AlertType Type => AlertType.Whale;
     }
 }

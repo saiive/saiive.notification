@@ -17,6 +17,7 @@ namespace Saiive.Notification.Check.CheckTypes
         protected readonly AddressApi AddressApi;
         protected readonly TransactionApi TxApi;
         protected readonly BlockApi BlockApi;
+        protected readonly CoingecokApi CoingeckoApi;
 
         protected readonly ApiClient Client;
 
@@ -32,6 +33,7 @@ namespace Saiive.Notification.Check.CheckTypes
             AddressApi = new AddressApi(Client);
             TxApi = new TransactionApi(Client);
             BlockApi = new BlockApi(Client);
+            CoingeckoApi = new CoingecokApi(Client);
         }
 
         protected abstract Task<bool> CheckIsValid(SubscriptionsEntity subscription,
