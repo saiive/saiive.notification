@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 
 namespace Saiive.Notification.Abstractions
 {
@@ -26,44 +27,32 @@ namespace Saiive.Notification.Abstractions
             subscription.IsEnabled = false;
             var confirmMessage = $"{information.Host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
 
-            var notification = new NotifyMessage(subscription)
-            {
-                Title = subscription.Name,
-                Message = confirmMessage
-            };
-
-            return Task.FromResult(notification);
+            var notification = new UrlTextMessage(subscription,
+                "You need to confirm your subscription with opening the link below",  subscription.Name, confirmMessage, "Activate");
+            
+            return Task.FromResult(notification as NotifyMessage);
         }
 
 
         public virtual Task<NotifyMessage> Activated(SubscriptionsEntity subscription, ActivateInformation information)
         {
             var deactivateLink = $"{information.Host}/api/deactivate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmMessage = $"Your subscription has been activated. To disable it use this link: {deactivateLink}";
-
-            var notification = new NotifyMessage(subscription)
-            {
-                Title = subscription.Name,
-                Message = confirmMessage
-            };
+          
+            var notification = new UrlTextMessage(subscription,
+                "Your subscription has been activated. To disable it use the link below", subscription.Name, deactivateLink, "Disable");
 
 
-            return Task.FromResult(notification);
+            return Task.FromResult(notification as NotifyMessage);
         }
 
         public virtual Task<NotifyMessage> Deactivated(SubscriptionsEntity subscription, DeactivateInformation information)
         {
             var activateLink = $"{information.Host}/api/activate/{subscription.RowKey}/{subscription.PartitionKey}";
-            var confirmMessage = $"Your subscription has been deactivated. To activate it use this link: {activateLink}";
+           
+            var notification = new UrlTextMessage(subscription,
+                "Your subscription has been deactivated. To activate it use the link below", subscription.Name, activateLink, "Activate");
 
-            var notification = new NotifyMessage(subscription)
-            {
-                Title = subscription.Name,
-                Message = confirmMessage
-            };
-
-
-            return Task.FromResult(notification);
+            return Task.FromResult(notification as NotifyMessage);
         }
 
 

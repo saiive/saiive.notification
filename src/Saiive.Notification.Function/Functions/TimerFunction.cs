@@ -79,7 +79,8 @@ namespace Saiive.Notification.Function.Functions
                 {
                     CorrelationId = notification.Title,
                     Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(notification)),
-                    To = "notification"
+                    To = "notification",
+                    ContentType = notification.GetType().Name
 
                 };
                 await notificationBus.AddAsync(message);

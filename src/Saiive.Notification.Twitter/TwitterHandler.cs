@@ -63,7 +63,7 @@ namespace Saiive.Notification.Twitter
                     connectionSettings[AccessTokenSecretProperty]);
 
                 var appClient = new TwitterClient(appCredentials);
-                await appClient.Tweets.PublishTweetAsync(message.Message);
+                await appClient.Tweets.PublishTweetAsync(await message.ToMessage());
             }
             catch (Exception e)
             {

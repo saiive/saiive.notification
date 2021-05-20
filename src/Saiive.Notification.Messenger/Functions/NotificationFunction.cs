@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 using Saiive.Notifications.Messenger.Core;
 
 namespace Saiive.Notification.Messenger.Functions
@@ -25,7 +26,11 @@ namespace Saiive.Notification.Messenger.Functions
 
             try
             {
-                var message = JsonConvert.DeserializeObject<NotifyMessage>(Encoding.UTF8.GetString(mySbMsg.Body));
+                if (String.IsNullOrEmpty(mySbMsg.ContentType))
+                {
+                    return;
+                }
+                var message = NotifyMessage.Decode(mySbMsg.ContentType, Encoding.UTF8.GetString(mySbMsg.Body));
                 await _handlerFactory.SendNotification(message.Subscription, message);
             }
             catch(Exception e)

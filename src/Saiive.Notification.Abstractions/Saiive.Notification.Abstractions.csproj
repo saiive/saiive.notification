@@ -9,4 +9,10 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Model\Messages\UrlTextMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

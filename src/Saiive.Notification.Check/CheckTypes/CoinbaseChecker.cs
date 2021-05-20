@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 using Saiive.Notification.Check.Options;
 
 namespace Saiive.Notification.Check.CheckTypes
@@ -47,12 +48,9 @@ namespace Saiive.Notification.Check.CheckTypes
                 {
                     var explorerUrl =
                         $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
-                    ret.Add(new NotifyMessage(subscription)
-                    {
-                        Title = alertSettings[PublicKeyProperty],
-                        Message = String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
-                            (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl)
-                    });
+                   
+                    ret.Add(new SimpleTextMessage(subscription, alertSettings[PublicKeyProperty], String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
+                        (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl)));
                 }
 
                 subscription.LastStateInteger = blockTip.Height.Value;

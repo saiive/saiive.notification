@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 using Saiive.Notification.Check.Options;
 
 namespace Saiive.Notification.Check.CheckTypes
@@ -99,11 +100,9 @@ namespace Saiive.Notification.Check.CheckTypes
                                 {
                                     if (output.Value >= threshold)
                                     {
-                                        var message = new NotifyMessage(subscription)
-                                        {
-                                            Message =
-                                                $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}"
-                                        };
+                                        var message = new SimpleTextMessage(subscription,
+                                            $"{output.Value / 100000000} transferred to {output.Address}\n\n{explorerUrl}",
+                                            subscription.Name);
                                         ret.Add(message);
                                     }
                                 }
@@ -112,11 +111,7 @@ namespace Saiive.Notification.Check.CheckTypes
                                 {
                                     if (input.Value >= threshold)
                                     {
-                                        var message = new NotifyMessage(subscription)
-                                        {
-                                            Message =
-                                                $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}"
-                                        };
+                                        var message = new SimpleTextMessage(subscription, $"{input.Value / 100000000} transferred from {input.Address}\n\n{explorerUrl}", subscription.Name);
                                         ret.Add(message);
                                     }
                                 }

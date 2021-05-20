@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 using Saiive.Notification.Check.Options;
 using Saiive.SuperNode.Client.Model;
 
@@ -97,11 +98,7 @@ namespace Saiive.Notification.Check.CheckTypes
                     var msg = String.Format(template, alertSettings[PublicKeyProperty],
                         tx.Value / 100000000, tx.MintTxId, tx.MintHeight.Value, explorerUrl);
 
-                    ret.Add(new NotifyMessage(subscription)
-                    {
-                        Title = alertSettings[PublicKeyProperty],
-                        Message = msg
-                    });
+                    ret.Add(new SimpleTextMessage(subscription, alertSettings[PublicKeyProperty], msg));
                 }
 
 

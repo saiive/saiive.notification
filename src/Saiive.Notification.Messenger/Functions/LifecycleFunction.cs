@@ -42,7 +42,8 @@ namespace Saiive.Notification.Messenger.Functions
                 var message = new Message
                 {
                     To = "notification",
-                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg))
+                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg)),
+                    ContentType = msg.GetType().Name
 
                 };
                 await notificationBus.AddAsync(message);
@@ -72,7 +73,8 @@ namespace Saiive.Notification.Messenger.Functions
                 var message = new Message
                 {
                     To = "notification",
-                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg))
+                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg)),
+                    ContentType = msg.GetType().Name
 
                 };
                 await notificationBus.AddAsync(message);
@@ -104,7 +106,8 @@ namespace Saiive.Notification.Messenger.Functions
                 var message = new Message
                 {
                     To = "notification",
-                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg))
+                    Body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(msg)),
+                    ContentType = msg.GetType().Name
 
                 };
                 await notificationBus.AddAsync(message);

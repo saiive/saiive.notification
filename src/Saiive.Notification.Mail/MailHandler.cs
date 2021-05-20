@@ -39,8 +39,8 @@ namespace Saiive.Notification.Mail
             {
                 var msg = MailHelper.CreateSingleEmail(
                     new EmailAddress(Environment.GetEnvironmentVariable("SenderMail"), "Saiive Alert Bot"),
-                    new EmailAddress(connectionSettings[ToProperty]), $"Saiive Alert Bot ({message.Title})",
-                    "", message.Message);
+                    new EmailAddress(connectionSettings[ToProperty]), $"Saiive Alert Bot ({message})",
+                    "", await message.ToMessage());
 
                 var response = await _mailHandler.SendEmailAsync(msg);
                 var body = await response.Body.ReadAsStringAsync();

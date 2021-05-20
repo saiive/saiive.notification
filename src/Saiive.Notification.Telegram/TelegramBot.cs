@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Saiive.Notification.Abstractions;
 using Saiive.Notification.Abstractions.Model;
+using Saiive.Notification.Abstractions.Model.Messages;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Saiive.Notification.Telegram
 {
@@ -40,12 +42,32 @@ namespace Saiive.Notification.Telegram
             try
             {
                 var telegram = new TelegramBotClient(connectionSettings[BotIdProperty]);
-                var msg = $"*{message.Title}*\n{message.Message}".Replace("_", "\\_");
-                await telegram.SendTextMessageAsync(
-                    connectionSettings[ChannelIdProperty],
-                    msg,
-                    ParseMode.Markdown
-                );
+                switch (message)
+                {
+                    case UrlTextMessage urlMessage:
+                        var urlMessageText = $"{urlMessage.Text}".Replace("_", "\\_");
+                        await telegram.SendTextMessageAsync(
+                            connectionSettings[ChannelIdProperty],
+                            urlMessageText,
+                            ParseMode.Markdown,
+                            replyMarkup:new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl(urlMessage.UrlText, urlMessage.Url))
+                        );
+                        break;
+                    default:
+                        var msg = $"*{message.Title}*\n{await message.ToMessage()}".Replace("_", "\\_");
+
+
+
+                        await telegram.SendTextMessageAsync(
+                            connectionSettings[ChannelIdProperty],
+                            msg,
+                            ParseMode.Markdown
+                        );
+                        break;
+                }
+
+              
+            
             }
             catch (Exception e)
             {
