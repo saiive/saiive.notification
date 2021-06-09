@@ -48,9 +48,11 @@ namespace Saiive.Notification.Check.CheckTypes
                 {
                     var explorerUrl =
                         $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
-                   
-                    ret.Add(new SimpleTextMessage(subscription, alertSettings[PublicKeyProperty], String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
-                        (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl)));
+
+                    var msg = String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
+                        (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl);
+
+                    ret.Add(new SimpleTextMessage(subscription , msg, alertSettings[PublicKeyProperty]);
                 }
 
                 subscription.LastStateInteger = blockTip.Height.Value;
