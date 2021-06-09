@@ -52,7 +52,7 @@ namespace Saiive.Notification.Check.CheckTypes
                     var msg = String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
                         (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl);
 
-                    ret.Add(new SimpleTextMessage(subscription , msg, alertSettings[PublicKeyProperty]);
+                    ret.Add(new SimpleTextMessage(subscription , msg, alertSettings[PublicKeyProperty]));
                 }
 
                 subscription.LastStateInteger = blockTip.Height.Value;
