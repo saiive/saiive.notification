@@ -35,7 +35,6 @@ namespace Saiive.Notification.Function.Functions
 
 
             await Check(cloudTable, Interval.Min_1, notificationBus);
-            await Check(cloudTable, Interval.Min_1, notificationBus);
         }
 
 

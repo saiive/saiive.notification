@@ -13,7 +13,7 @@ namespace Saiive.Notification.Check.CheckTypes
     internal class CoinbaseChecker : PublicKeyCheckerBase
     {
         private readonly string _defaultTemplate =
-            "🎉🎉 {0} Minted new coinbase\nRewards received {1} $DFI\n\nTxId {2}@{3}\n{4}\n\n🍻🍻";
+            "🎉🎉 {0} ({1}) Minted new coinbase\nRewards received {2} $DFI\n\nTxId {3}@{4}\n{5}\n\n🍻🍻";
 
 
         public CoinbaseChecker(IOptions<AlertConfig> config,ILogger<CoinbaseChecker> logger) : base(config, logger)
@@ -49,7 +49,7 @@ namespace Saiive.Notification.Check.CheckTypes
                     var explorerUrl =
                         $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
 
-                    var msg = String.Format(_defaultTemplate, alertSettings[PublicKeyProperty],
+                    var msg = String.Format(_defaultTemplate, subscription.Name, alertSettings[PublicKeyProperty],
                         (tx.Value / 100000000), tx.MintTxId, tx.MintHeight.Value, explorerUrl);
 
                     ret.Add(new SimpleTextMessage(subscription , msg, alertSettings[PublicKeyProperty]));
