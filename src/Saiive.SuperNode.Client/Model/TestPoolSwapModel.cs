@@ -1,7 +1,6 @@
-
-using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Saiive.SuperNode.Client.Model {
 

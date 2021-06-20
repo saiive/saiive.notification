@@ -92,7 +92,7 @@ namespace Saiive.Notification.Check.CheckTypes
                         foreach (var tx in txs.Where(a => !a.Coinbase))
                         {
                             var explorerUrl =
-                                $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.Txid})";
+                                $"[Explorer]({Config.Value.ExplorerBaseUrl}{String.Format(Config.Value.ExplorerTxPrefix, subscription.Network)}{tx.MintTxId})";
 
                             if (tx.Details != null)
                             {

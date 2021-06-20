@@ -101,9 +101,9 @@ namespace Saiive.SuperNode.Client.Api
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1HealthGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1HealthGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1HealthGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1HealthGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }
@@ -117,9 +117,9 @@ namespace Saiive.SuperNode.Client.Api
         public void ApiV1NetworkCoinHealthGet (string network, string coin)
         {
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinHealthGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinHealthGet");
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinHealthGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinHealthGet");
     
             var path = "/api/v1/{network}/{coin}/health";
             path = path.Replace("{format}", "json");
@@ -140,9 +140,9 @@ path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHealthGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHealthGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHealthGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHealthGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }

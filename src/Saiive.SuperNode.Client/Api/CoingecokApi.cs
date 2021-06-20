@@ -84,11 +84,11 @@ namespace Saiive.SuperNode.Client.Api
         public Dictionary<string, CoinPrice> ApiV1NetworkCoinCoinPriceCurrencyGet (string coin, string network, string currency)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
             // verify the required parameter 'currency' is set
-            if (currency == null) throw new ApiException(400, "Missing required parameter 'currency' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
+            if (currency == null) throw new Client.ApiException(400, "Missing required parameter 'currency' when calling ApiV1NetworkCoinCoinPriceCurrencyGet");
     
             var path = "/api/v1/{network}/{coin}/coin-price/{currency}";
             path = path.Replace("{format}", "json");
@@ -110,9 +110,9 @@ path = path.Replace("{" + "currency" + "}", ApiClient.ParameterToString(currency
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinCoinPriceCurrencyGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinCoinPriceCurrencyGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinCoinPriceCurrencyGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinCoinPriceCurrencyGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (Dictionary<string, CoinPrice>) ApiClient.Deserialize(response.Content, typeof(Dictionary<string, CoinPrice>), response.Headers);
         }

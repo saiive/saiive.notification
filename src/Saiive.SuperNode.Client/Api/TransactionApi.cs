@@ -26,7 +26,16 @@ namespace Saiive.SuperNode.Client.Api
         /// <param name="network"></param>
         /// <param name="height"></param>
         /// <returns>List&lt;TransactionModel&gt;</returns>
-        List<BlockTransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height);
+        List<TransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height);
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="coin"></param>
+        /// <param name="network"></param>
+        /// <param name="height"></param>
+        /// <param name="includeDetails"></param>
+        /// <returns>List&lt;TransactionModel&gt;</returns>
+        List<TransactionModel> ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet (string coin, string network, int? height, bool? includeDetails);
         /// <summary>
         ///  
         /// </summary>
@@ -108,11 +117,11 @@ namespace Saiive.SuperNode.Client.Api
         public List<TransactionModel> ApiV1NetworkCoinTxBlockBlockGet (string coin, string network, string block)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxBlockBlockGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxBlockBlockGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxBlockBlockGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxBlockBlockGet");
             // verify the required parameter 'block' is set
-            if (block == null) throw new ApiException(400, "Missing required parameter 'block' when calling ApiV1NetworkCoinTxBlockBlockGet");
+            if (block == null) throw new Client.ApiException(400, "Missing required parameter 'block' when calling ApiV1NetworkCoinTxBlockBlockGet");
     
             var path = "/api/v1/{network}/{coin}/tx/block/{block}";
             path = path.Replace("{format}", "json");
@@ -134,9 +143,9 @@ path = path.Replace("{" + "block" + "}", ApiClient.ParameterToString(block));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxBlockBlockGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxBlockBlockGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxBlockBlockGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxBlockBlockGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (List<TransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<TransactionModel>), response.Headers);
         }
@@ -148,19 +157,19 @@ path = path.Replace("{" + "block" + "}", ApiClient.ParameterToString(block));
         /// <param name="network"></param>
         /// <param name="height"></param>
         /// <returns>List&lt;TransactionModel&gt;</returns>
-        public List<BlockTransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height)
+        public List<TransactionModel> ApiV1NetworkCoinTxHeightHeightGet (string coin, string network, int? height)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxHeightHeightGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxHeightHeightGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxHeightHeightGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxHeightHeightGet");
             // verify the required parameter 'height' is set
-            if (height == null) throw new ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinTxHeightHeightGet");
+            if (height == null) throw new Client.ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinTxHeightHeightGet");
     
-            var path = "/api/v1/{network}/{coin}/tx/height/{height}/true";
+            var path = "/api/v1/{network}/{coin}/tx/height/{height}";
             path = path.Replace("{format}", "json");
-            path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin.ToUpper()));
-path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network.ToLower()));
+            path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
+path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network));
 path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
     
             var queryParams = new Dictionary<String, String>();
@@ -177,11 +186,58 @@ path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightGet: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (List<BlockTransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<BlockTransactionModel>), response.Headers);
+            return (List<TransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<TransactionModel>), response.Headers);
+        }
+    
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="coin"></param>
+        /// <param name="network"></param>
+        /// <param name="height"></param>
+        /// <param name="includeDetails"></param>
+        /// <returns>List&lt;TransactionModel&gt;</returns>
+        public List<TransactionModel> ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet (string coin, string network, int? height, bool? includeDetails)
+        {
+            // verify the required parameter 'coin' is set
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet");
+            // verify the required parameter 'network' is set
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet");
+            // verify the required parameter 'height' is set
+            if (height == null) throw new Client.ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet");
+            // verify the required parameter 'includeDetails' is set
+            if (includeDetails == null) throw new Client.ApiException(400, "Missing required parameter 'includeDetails' when calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet");
+    
+            var path = "/api/v1/{network}/{coin}/tx/height/{height}/{includeDetails}";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
+path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network));
+path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
+path = path.Replace("{" + "includeDetails" + "}", ApiClient.ParameterToString(includeDetails));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                    
+            // authentication setting, if any
+            String[] authSettings = new String[] {  };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxHeightHeightIncludeDetailsGet: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return (List<TransactionModel>) ApiClient.Deserialize(response.Content, typeof(List<TransactionModel>), response.Headers);
         }
     
         /// <summary>
@@ -194,11 +250,11 @@ path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
         public TransactionModel ApiV1NetworkCoinTxIdTxIdGet (string coin, string network, string txId)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxIdTxIdGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxIdTxIdGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxIdTxIdGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxIdTxIdGet");
             // verify the required parameter 'txId' is set
-            if (txId == null) throw new ApiException(400, "Missing required parameter 'txId' when calling ApiV1NetworkCoinTxIdTxIdGet");
+            if (txId == null) throw new Client.ApiException(400, "Missing required parameter 'txId' when calling ApiV1NetworkCoinTxIdTxIdGet");
     
             var path = "/api/v1/{network}/{coin}/tx/id/{txId}";
             path = path.Replace("{format}", "json");
@@ -220,9 +276,9 @@ path = path.Replace("{" + "txId" + "}", ApiClient.ParameterToString(txId));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxIdTxIdGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxIdTxIdGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxIdTxIdGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxIdTxIdGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (TransactionModel) ApiClient.Deserialize(response.Content, typeof(TransactionModel), response.Headers);
         }
@@ -237,9 +293,9 @@ path = path.Replace("{" + "txId" + "}", ApiClient.ParameterToString(txId));
         public TransactionResponse ApiV1NetworkCoinTxRawPost (string coin, string network, TransactionRequest body)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxRawPost");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTxRawPost");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxRawPost");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTxRawPost");
     
             var path = "/api/v1/{network}/{coin}/tx/raw";
             path = path.Replace("{format}", "json");
@@ -261,9 +317,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxRawPost: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxRawPost: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxRawPost: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTxRawPost: " + response.ErrorMessage, response.ErrorMessage);
     
             return (TransactionResponse) ApiClient.Deserialize(response.Content, typeof(TransactionResponse), response.Headers);
         }

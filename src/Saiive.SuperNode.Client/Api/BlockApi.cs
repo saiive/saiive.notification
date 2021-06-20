@@ -91,11 +91,11 @@ namespace Saiive.SuperNode.Client.Api
         public BlockModel ApiV1NetworkCoinBlockHeightGet (string coin, string network, int? height)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinBlockHeightGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinBlockHeightGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinBlockHeightGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinBlockHeightGet");
             // verify the required parameter 'height' is set
-            if (height == null) throw new ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinBlockHeightGet");
+            if (height == null) throw new Client.ApiException(400, "Missing required parameter 'height' when calling ApiV1NetworkCoinBlockHeightGet");
     
             var path = "/api/v1/{network}/{coin}/block/{height}";
             path = path.Replace("{format}", "json");
@@ -117,9 +117,9 @@ path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockHeightGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockHeightGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockHeightGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockHeightGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (BlockModel) ApiClient.Deserialize(response.Content, typeof(BlockModel), response.Headers);
         }
@@ -133,9 +133,9 @@ path = path.Replace("{" + "height" + "}", ApiClient.ParameterToString(height));
         public BlockModel ApiV1NetworkCoinBlockTipGet (string coin, string network)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinBlockTipGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinBlockTipGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinBlockTipGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinBlockTipGet");
     
             var path = "/api/v1/{network}/{coin}/block/tip";
             path = path.Replace("{format}", "json");
@@ -156,9 +156,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockTipGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockTipGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockTipGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinBlockTipGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (BlockModel) ApiClient.Deserialize(response.Content, typeof(BlockModel), response.Headers);
         }

@@ -101,9 +101,9 @@ namespace Saiive.SuperNode.Client.Api
         public Dictionary<string, PoolShareModel> ApiV1NetworkCoinListminepoolsharesPost (string coin, string network, AddressesBodyRequest body)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListminepoolsharesPost");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListminepoolsharesPost");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListminepoolsharesPost");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListminepoolsharesPost");
     
             var path = "/api/v1/{network}/{coin}/listminepoolshares";
             path = path.Replace("{format}", "json");
@@ -125,9 +125,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListminepoolsharesPost: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListminepoolsharesPost: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListminepoolsharesPost: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListminepoolsharesPost: " + response.ErrorMessage, response.ErrorMessage);
     
             return (Dictionary<string, PoolShareModel>) ApiClient.Deserialize(response.Content, typeof(Dictionary<string, PoolShareModel>), response.Headers);
         }
@@ -141,9 +141,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
         public Dictionary<string, PoolShareModel> ApiV1NetworkCoinListpoolsharesGet (string coin, string network)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolsharesGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolsharesGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolsharesGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolsharesGet");
     
             var path = "/api/v1/{network}/{coin}/listpoolshares";
             path = path.Replace("{format}", "json");
@@ -164,9 +164,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (Dictionary<string, PoolShareModel>) ApiClient.Deserialize(response.Content, typeof(Dictionary<string, PoolShareModel>), response.Headers);
         }
@@ -183,15 +183,15 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
         public Dictionary<string, PoolShareModel> ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet (string coin, string network, int? start, int? limit, bool? includingStart)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
             // verify the required parameter 'start' is set
-            if (start == null) throw new ApiException(400, "Missing required parameter 'start' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
+            if (start == null) throw new Client.ApiException(400, "Missing required parameter 'start' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
             // verify the required parameter 'limit' is set
-            if (limit == null) throw new ApiException(400, "Missing required parameter 'limit' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
+            if (limit == null) throw new Client.ApiException(400, "Missing required parameter 'limit' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
             // verify the required parameter 'includingStart' is set
-            if (includingStart == null) throw new ApiException(400, "Missing required parameter 'includingStart' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
+            if (includingStart == null) throw new Client.ApiException(400, "Missing required parameter 'includingStart' when calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet");
     
             var path = "/api/v1/{network}/{coin}/listpoolshares/{start}/{limit}/{including_start}";
             path = path.Replace("{format}", "json");
@@ -215,9 +215,9 @@ path = path.Replace("{" + "including_start" + "}", ApiClient.ParameterToString(i
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolsharesStartLimitIncludingStartGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (Dictionary<string, PoolShareModel>) ApiClient.Deserialize(response.Content, typeof(Dictionary<string, PoolShareModel>), response.Headers);
         }

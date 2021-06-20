@@ -43,7 +43,7 @@ namespace Saiive.Notification.Check.CheckTypes
                 Logger.LogInformation(
                     $"Check for {subscription.Name} with pubKey {alertSettings[PublicKeyProperty]}");
                 foreach (var tx in txs.Where(a =>
-                    a.Coinbase.HasValue && a.Coinbase.Value && a.MintHeight.HasValue &&
+                    a.Coinbase && a.Coinbase && a.MintHeight.HasValue &&
                     a.MintHeight > subscription.LastStateInteger))
                 {
                     var explorerUrl =

@@ -91,11 +91,11 @@ namespace Saiive.SuperNode.Client.Api
         public PoolPairModel ApiV1NetworkCoinGetpoolpairPoolIDGet (string coin, string network, string poolID)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
             // verify the required parameter 'poolID' is set
-            if (poolID == null) throw new ApiException(400, "Missing required parameter 'poolID' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
+            if (poolID == null) throw new Client.ApiException(400, "Missing required parameter 'poolID' when calling ApiV1NetworkCoinGetpoolpairPoolIDGet");
     
             var path = "/api/v1/{network}/{coin}/getpoolpair/{poolID}";
             path = path.Replace("{format}", "json");
@@ -117,9 +117,9 @@ path = path.Replace("{" + "poolID" + "}", ApiClient.ParameterToString(poolID));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinGetpoolpairPoolIDGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinGetpoolpairPoolIDGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinGetpoolpairPoolIDGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinGetpoolpairPoolIDGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (PoolPairModel) ApiClient.Deserialize(response.Content, typeof(PoolPairModel), response.Headers);
         }
@@ -133,9 +133,9 @@ path = path.Replace("{" + "poolID" + "}", ApiClient.ParameterToString(poolID));
         public PoolPairModel ApiV1NetworkCoinListpoolpairsGet (string coin, string network)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolpairsGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinListpoolpairsGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolpairsGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinListpoolpairsGet");
     
             var path = "/api/v1/{network}/{coin}/listpoolpairs";
             path = path.Replace("{format}", "json");
@@ -156,9 +156,9 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolpairsGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolpairsGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolpairsGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinListpoolpairsGet: " + response.ErrorMessage, response.ErrorMessage);
     
             return (PoolPairModel) ApiClient.Deserialize(response.Content, typeof(PoolPairModel), response.Headers);
         }

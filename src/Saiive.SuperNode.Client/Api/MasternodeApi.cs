@@ -9,36 +9,35 @@ namespace Saiive.SuperNode.Client.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public interface ITokenApi
+    public interface IMasternodeApi
     {
         /// <summary>
         ///  
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="network"></param>
-        /// <returns>Dictionary&lt;string, TokenModel&gt;</returns>
-        Dictionary<string, TokenModel> ApiV1NetworkCoinTokensGet (string coin, string network);
+        /// <returns>List&lt;Masternode&gt;</returns>
+        List<Masternode> ApiV1NetworkCoinMasternodesListActiveGet (string coin, string network);
         /// <summary>
         ///  
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="network"></param>
-        /// <param name="token"></param>
-        /// <returns>TokenModel</returns>
-        TokenModel ApiV1NetworkCoinTokensTokenGet (string coin, string network, string token);
+        /// <returns>List&lt;Masternode&gt;</returns>
+        List<Masternode> ApiV1NetworkCoinMasternodesListGet (string coin, string network);
     }
   
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public class TokenApi : ITokenApi
+    public class MasternodeApi : IMasternodeApi
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenApi"/> class.
+        /// Initializes a new instance of the <see cref="MasternodeApi"/> class.
         /// </summary>
         /// <param name="apiClient"> an instance of ApiClient (optional)</param>
         /// <returns></returns>
-        public TokenApi(ApiClient apiClient = null)
+        public MasternodeApi(ApiClient apiClient = null)
         {
             if (apiClient == null) // use the default one in Configuration
                 this.ApiClient = Configuration.DefaultApiClient; 
@@ -47,10 +46,10 @@ namespace Saiive.SuperNode.Client.Api
         }
     
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenApi"/> class.
+        /// Initializes a new instance of the <see cref="MasternodeApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public TokenApi(String basePath)
+        public MasternodeApi(String basePath)
         {
             this.ApiClient = new ApiClient(basePath);
         }
@@ -86,15 +85,15 @@ namespace Saiive.SuperNode.Client.Api
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="network"></param>
-        /// <returns>Dictionary&lt;string, TokenModel&gt;</returns>
-        public Dictionary<string, TokenModel> ApiV1NetworkCoinTokensGet (string coin, string network)
+        /// <returns>List&lt;Masternode&gt;</returns>
+        public List<Masternode> ApiV1NetworkCoinMasternodesListActiveGet (string coin, string network)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTokensGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinMasternodesListActiveGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTokensGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinMasternodesListActiveGet");
     
-            var path = "/api/v1/{network}/{coin}/tokens";
+            var path = "/api/v1/{network}/{coin}/masternodes/list/active";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
 path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network));
@@ -113,11 +112,11 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTokensGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinMasternodesListActiveGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTokensGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinMasternodesListActiveGet: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (Dictionary<string, TokenModel>) ApiClient.Deserialize(response.Content, typeof(Dictionary<string, TokenModel>), response.Headers);
+            return (List<Masternode>) ApiClient.Deserialize(response.Content, typeof(List<Masternode>), response.Headers);
         }
     
         /// <summary>
@@ -125,22 +124,18 @@ path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network))
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="network"></param>
-        /// <param name="token"></param>
-        /// <returns>TokenModel</returns>
-        public TokenModel ApiV1NetworkCoinTokensTokenGet (string coin, string network, string token)
+        /// <returns>List&lt;Masternode&gt;</returns>
+        public List<Masternode> ApiV1NetworkCoinMasternodesListGet (string coin, string network)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinTokensTokenGet");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinMasternodesListGet");
             // verify the required parameter 'network' is set
-            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinTokensTokenGet");
-            // verify the required parameter 'token' is set
-            if (token == null) throw new Client.ApiException(400, "Missing required parameter 'token' when calling ApiV1NetworkCoinTokensTokenGet");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinMasternodesListGet");
     
-            var path = "/api/v1/{network}/{coin}/tokens/{token}";
+            var path = "/api/v1/{network}/{coin}/masternodes/list";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "coin" + "}", ApiClient.ParameterToString(coin));
 path = path.Replace("{" + "network" + "}", ApiClient.ParameterToString(network));
-path = path.Replace("{" + "token" + "}", ApiClient.ParameterToString(token));
     
             var queryParams = new Dictionary<String, String>();
             var headerParams = new Dictionary<String, String>();
@@ -156,11 +151,11 @@ path = path.Replace("{" + "token" + "}", ApiClient.ParameterToString(token));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTokensTokenGet: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinMasternodesListGet: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinTokensTokenGet: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinMasternodesListGet: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (TokenModel) ApiClient.Deserialize(response.Content, typeof(TokenModel), response.Headers);
+            return (List<Masternode>) ApiClient.Deserialize(response.Content, typeof(List<Masternode>), response.Headers);
         }
     
     }

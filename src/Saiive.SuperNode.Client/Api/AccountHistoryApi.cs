@@ -104,13 +104,13 @@ namespace Saiive.SuperNode.Client.Api
         public List<AccountHistory> ApiV1NetworkCoinAccounthistoryAddressTokenPost (string coin, string network, string address, string token, string limit, string maxBlockHeight, bool? noRewards)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
             // verify the required parameter 'address' is set
-            if (address == null) throw new ApiException(400, "Missing required parameter 'address' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
+            if (address == null) throw new Client.ApiException(400, "Missing required parameter 'address' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
             // verify the required parameter 'token' is set
-            if (token == null) throw new ApiException(400, "Missing required parameter 'token' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
+            if (token == null) throw new Client.ApiException(400, "Missing required parameter 'token' when calling ApiV1NetworkCoinAccounthistoryAddressTokenPost");
     
             var path = "/api/v1/{network}/{coin}/accounthistory/{address}/{token}";
             path = path.Replace("{format}", "json");
@@ -136,9 +136,9 @@ path = path.Replace("{" + "token" + "}", ApiClient.ParameterToString(token));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinAccounthistoryAddressTokenPost: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinAccounthistoryAddressTokenPost: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinAccounthistoryAddressTokenPost: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinAccounthistoryAddressTokenPost: " + response.ErrorMessage, response.ErrorMessage);
     
             return (List<AccountHistory>) ApiClient.Deserialize(response.Content, typeof(List<AccountHistory>), response.Headers);
         }
@@ -157,11 +157,11 @@ path = path.Replace("{" + "token" + "}", ApiClient.ParameterToString(token));
         public List<AccountHistory> ApiV1NetworkCoinHistoryAllTokenPost (string coin, string network, string token, AddressesBodyRequest body, string limit, string maxBlockHeight, bool? noRewards)
         {
             // verify the required parameter 'coin' is set
-            if (coin == null) throw new ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinHistoryAllTokenPost");
+            if (coin == null) throw new Client.ApiException(400, "Missing required parameter 'coin' when calling ApiV1NetworkCoinHistoryAllTokenPost");
             // verify the required parameter 'network' is set
-            if (network == null) throw new ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinHistoryAllTokenPost");
+            if (network == null) throw new Client.ApiException(400, "Missing required parameter 'network' when calling ApiV1NetworkCoinHistoryAllTokenPost");
             // verify the required parameter 'token' is set
-            if (token == null) throw new ApiException(400, "Missing required parameter 'token' when calling ApiV1NetworkCoinHistoryAllTokenPost");
+            if (token == null) throw new Client.ApiException(400, "Missing required parameter 'token' when calling ApiV1NetworkCoinHistoryAllTokenPost");
     
             var path = "/api/v1/{network}/{coin}/history-all/{token}";
             path = path.Replace("{format}", "json");
@@ -187,9 +187,9 @@ path = path.Replace("{" + "token" + "}", ApiClient.ParameterToString(token));
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHistoryAllTokenPost: " + response.Content, response.Content);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHistoryAllTokenPost: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHistoryAllTokenPost: " + response.ErrorMessage, response.ErrorMessage);
+                throw new Client.ApiException ((int)response.StatusCode, "Error calling ApiV1NetworkCoinHistoryAllTokenPost: " + response.ErrorMessage, response.ErrorMessage);
     
             return (List<AccountHistory>) ApiClient.Deserialize(response.Content, typeof(List<AccountHistory>), response.Headers);
         }

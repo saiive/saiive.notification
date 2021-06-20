@@ -1,7 +1,6 @@
-
-using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Saiive.SuperNode.Client.Model {
 
@@ -36,7 +35,7 @@ namespace Saiive.SuperNode.Client.Model {
     /// </summary>
     [DataMember(Name="coinbase", EmitDefaultValue=false)]
     [JsonProperty(PropertyName = "coinbase")]
-    public bool? Coinbase { get; set; }
+    public bool Coinbase { get; set; }
 
     /// <summary>
     /// Gets or Sets MintIndex
@@ -99,7 +98,7 @@ namespace Saiive.SuperNode.Client.Model {
     /// </summary>
     [DataMember(Name="confirmations", EmitDefaultValue=false)]
     [JsonProperty(PropertyName = "confirmations")]
-    public int? Confirmations { get; set; }
+    public long? Confirmations { get; set; }
 
     /// <summary>
     /// Gets or Sets Details

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -9,20 +8,20 @@ namespace Saiive.SuperNode.Client.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class TransactionDetailModel {
+  public class SendToAddressBody {
     /// <summary>
-    /// Gets or Sets Inputs
+    /// Gets or Sets Address
     /// </summary>
-    [DataMember(Name="inputs", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "inputs")]
-    public List<TransactionModel> Inputs { get; set; }
+    [DataMember(Name="address", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "address")]
+    public string Address { get; set; }
 
     /// <summary>
-    /// Gets or Sets Outputs
+    /// Gets or Sets Amount
     /// </summary>
-    [DataMember(Name="outputs", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "outputs")]
-    public List<TransactionModel> Outputs { get; set; }
+    [DataMember(Name="amount", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "amount")]
+    public double? Amount { get; set; }
 
 
     /// <summary>
@@ -31,9 +30,9 @@ namespace Saiive.SuperNode.Client.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class TransactionDetailModel {\n");
-      sb.Append("  Inputs: ").Append(Inputs).Append("\n");
-      sb.Append("  Outputs: ").Append(Outputs).Append("\n");
+      sb.Append("class SendToAddressBody {\n");
+      sb.Append("  Address: ").Append(Address).Append("\n");
+      sb.Append("  Amount: ").Append(Amount).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
